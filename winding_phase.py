@@ -150,9 +150,14 @@ def integrate_phase(kx: np.ndarray, ky: np.ndarray, w: np.ndarray, mask: np.ndar
     return phi, info
 
 
-def integrate_phase_multiscale(kx, ky, w, mask, factors=(4, 2, 1), pairs=None):
+def integrate_phase_multiscale(kx, ky, w, mask, factors=None, pairs=None,
+                               finest_maxiter=25000):
     """Coarse-to-fine weighted phase integration: solve small, upsample, refine.
-    Ridge-pair constraints are applied at the finest level."""
+    Ridge-pair constraints are applied at the finest level. For large domains
+    (>2M masked pixels) a deeper pyramid is used so the finest solve starts
+    from a good warm start; finest_maxiter bounds the final refinement."""
+    if factors is None:
+        factors = (8, 4, 2, 1) if mask.sum() > 2_000_000 else (4, 2, 1)
     phi0 = None
     for f in factors:
         if f > 1:
@@ -166,8 +171,12 @@ def integrate_phase_multiscale(kx, ky, w, mask, factors=(4, 2, 1), pairs=None):
                                                 ms.shape[1] / phi0.shape[1]), order=1)
             x0 = up[ms]
         phi, info = integrate_phase(kxs, kys, ws, ms, x0=x0,
-                                    maxiter=3000 if f > 1 else 8000,
+                                    maxiter=3000 if f > 1 else finest_maxiter,
                                     pairs=pairs if f == 1 else None)
+        if f == 1 and info != 0:
+            import sys
+            print(f"WARNING: finest-level CG not converged (info={info})",
+                  file=sys.stderr)
         phi0 = phi
     return phi0, info
 
