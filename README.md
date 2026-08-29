@@ -49,6 +49,26 @@ PHerc 1667 is the scroll read end-to-end in June 2026 — chosen as the dev targ
   ~36 mm diameter imply ~1.3–1.5 m of rolled papyrus. The published unrolled
   length of PHerc 1667 is **1.4 m** — recovered from a single slice.
 
+## Multi-slice and second-scroll results (day one, continued)
+
+- **Five slices across a 19 mm z-range of PHerc 1667** (z = 1800/2100/2317/2500/
+  2800 at level 3): winding spans 33.0 / 35.3 / 33.9 / 37.4 / 35.8, every solve
+  fully converged. Adjacent-slice fields (solved *independently*, 5.8 mm apart)
+  agree after gauge alignment to a median residual of 1.4–2.7 windings
+  (`validation/consistency.json`) — an upper bound that the planned z-coupled
+  solve should tighten substantially, since these solves share no information.
+
+  ![multislice](figures/multislice_strip.png)
+
+- **Second scroll, zero re-tuning**: PHerc 172 (the Bodleian scroll whose title
+  *On Vices* won the First Title Prize) — a different scanner, resolution
+  (7.9 µm), and energy (53 keV). The solver converges to a coherent monotonic
+  field of ~67 windings, core to rim. Contours are noisier than on PHerc 1667
+  (denser scroll, different masking) — scan-adaptive preprocessing is on the
+  roadmap, but the method transfers as-is.
+
+  ![second scroll](figures/second_scroll.png)
+
 ## Output: drop-in spiral-fitting constraints
 
 `winding_to_vc.py` exports the field as `vc_pointcollections_json_version: 1`
