@@ -157,6 +157,18 @@ plus a second in progress. Next, in order:
 
   ![slab](figures/slab_result.png)
 
+## Generalization: zero-shot on four untouched Grand-Prize volumes
+
+`scouting/letters_scout.py` streams a mid-volume slice from four 2027
+Grand-Prize-eligible volumes with essentially no community segmentation
+activity (PHerc1203, PHerc1218, PHerc0125, PHerc0257 — 8.6–9.4 µm masked
+scans) and runs the winding solver with zero per-scroll tuning. All four
+converge (CG info=0) with winding spans 37–57 at preview resolution
+(level 2, ~35 µm — expect undercounting from blur per the resolution
+study above; this is a scan-character smoke test, not a count claim).
+
+![four-volume scout](figures/letters_scout_4vol.png)
+
 ## Relation to existing community work
 
 Two community projects attack the same problem with different machinery, and this
