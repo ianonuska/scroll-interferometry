@@ -69,6 +69,32 @@ PHerc 1667 is the scroll read end-to-end in June 2026 — chosen as the dev targ
 
   ![second scroll](figures/second_scroll.png)
 
+## Ground-truth benchmark against the accepted unwrap
+
+PHerc 1667's released per-winding segments (`w011`–`w041`) are the accepted
+solution of the fully-read scroll — direct ground truth. Sampling each segment's
+mesh near our five slices and evaluating our field there (90 segment×slice
+samples across 20 segments, `validation/gt_rows.json`):
+
+![gt](figures/gt_benchmark.png)
+
+- **Same-winding coherence:** our field is near-constant within a ground-truth
+  winding — intra-segment MAD median **0.90 windings** (p90 2.2).
+- **Ordering:** winding order matches ground truth with median |residual|
+  **0.25–1.2 windings** per slice against a linear map.
+- **Known defect, under investigation:** the linear slope is **0.65–0.77, not
+  1.0** — the field systematically merges ~1 in 3 windings, consistent with
+  adjacent sheets blurring together at the 19.2 µm working resolution in densely
+  packed zones (the same ~0.75 ratio appears against naive ray peak counts).
+  A finer-resolution (9.6 µm) run to isolate the cause is in progress; outlier
+  segments (max residuals ~8) concentrate where the fit is least constrained.
+  We publish the defect rather than the calibrated-away version of it.
+
+Round-trip integrity: the exported JSONs load through the official
+`spiral-fitting/point_collection.py` loader verbatim (24 collections / 783
+points relative + 17 / 408 same-winding). Note the full spiral fitter requires a
+CUDA host; the fit-quality-vs-annotations benchmark will run there.
+
 ## Output: drop-in spiral-fitting constraints
 
 `winding_to_vc.py` exports the field as `vc_pointcollections_json_version: 1`

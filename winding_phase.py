@@ -215,9 +215,10 @@ def ridge_pairs(img: np.ndarray, theta_out: tuple, amp: np.ndarray, mask: np.nda
 
 # ---------------------------------------------------------------------- pipeline
 def winding_coordinate(img: np.ndarray, mask: np.ndarray, core: tuple[float, float],
-                       kmin: float = 2 * np.pi / 60, kmax: float = 2 * np.pi / 3):
+                       kmin: float = 2 * np.pi / 60, kmax: float = 2 * np.pi / 3,
+                       bands=None, ridge_max_gap: int = 45):
     theta, coh = structure_tensor(img)
-    kmag, amp = local_frequency(img, theta)
+    kmag, amp = (local_frequency(img, theta, bands=bands) if bands else local_frequency(img, theta))
     kmag = np.clip(kmag, kmin, kmax)
     # sign: orient the normal outward from the core
     ny, nx = img.shape
@@ -232,7 +233,7 @@ def winding_coordinate(img: np.ndarray, mask: np.ndarray, core: tuple[float, flo
     a95 = np.percentile(amp[mask], 95) + 1e-9
     w = coh * np.clip(amp / a95, 0, 1)
     w = np.where(mask, w, 0.0)
-    pairs = ridge_pairs(img, (nxv, nyv), amp, mask)
+    pairs = ridge_pairs(img, (nxv, nyv), amp, mask, max_gap=ridge_max_gap)
     n_pairs = len(pairs[0])
     phi, info = integrate_phase_multiscale(kx, ky, w, mask, pairs=pairs)
     print(f"  ridge-adjacency constraints: {n_pairs}")
