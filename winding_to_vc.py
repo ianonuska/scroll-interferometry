@@ -23,10 +23,15 @@ import numpy as np
 from scipy import ndimage as ndi
 
 
+ORDER = "xyz"  # shipped spiral-input files use p=[x,y,z]; set "zyx" for docs-order
+
+
 def _collection(cid, name, pts_zyx, wind_a=None, color=(1.0, 0.4, 0.0)):
     points = {}
     for i, p in enumerate(pts_zyx):
-        d = {"p": [float(p[0]), float(p[1]), float(p[2])], "creation_time": 0}
+        z, y, x = float(p[0]), float(p[1]), float(p[2])
+        coords = [x, y, z] if ORDER == "xyz" else [z, y, x]
+        d = {"p": coords, "creation_time": 0}
         if wind_a is not None:
             d["wind_a"] = float(wind_a[i])
         points[str(i)] = d
@@ -111,7 +116,10 @@ if __name__ == "__main__":
     ap.add_argument("--z", type=int, required=True, help="slice index at the analysis level")
     ap.add_argument("--scale", type=int, default=8, help="voxel scale to full-res (level 3 = 8)")
     ap.add_argument("--out", default="auto")
+    ap.add_argument("--order", choices=["xyz", "zyx"], default="xyz",
+                    help="coordinate order in output p (shipped datasets: xyz)")
     a = ap.parse_args()
+    ORDER = a.order
     W = np.load(a.winding_npy)
     Q = np.load(a.quality_npy)
     export(W, Q, a.z, a.scale, a.out)
