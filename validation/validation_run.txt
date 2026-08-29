@@ -1,0 +1,10 @@
+
+ray validation (peaks counted vs winding-coordinate span):
+  ang   0.0°: peaks= 33   |ΔW|=  29.3
+  ang  45.0°: peaks= 42   |ΔW|=  29.3
+  ang  90.0°: peaks= 39   |ΔW|=  30.6
+  ang 135.0°: peaks= 36   |ΔW|=  31.9
+  ang 180.0°: peaks= 33   |ΔW|=  31.1
+  ang 225.0°: peaks= 36   |ΔW|=  30.6
+  ang 270.0°: peaks= 43   |ΔW|=  29.5
+  ang 315.0°: peaks= 42   |ΔW|=  29.5
