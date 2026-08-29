@@ -140,6 +140,23 @@ plus a second in progress. Next, in order:
 4. Damage-aware gating of ridge marching; multi-core/branch handling.
 5. 3D-native solve.
 
+## Ablations & extensions (running log)
+
+- **Damage-aware ridge gate** (marching capped at 3.5 local wavelengths so a
+  damaged gap can't alias into a skipped winding): validated on the clean GT
+  set at 19.2 µm — slope 0.787 → **0.838**, intra-winding MAD 1.19 → **0.97**,
+  max residual unchanged. Now the default.
+- **Z-coupled slab solve** (`winding_slab.py`): joint least squares over a
+  5-slice stack (115 µm spacing) with soft z-continuity, warm-started from
+  gauge-aligned per-slice solutions. Result: adjacent-slice disagreement drops
+  from median 0.36–0.50 windings (independent solves) to **0.018–0.026** —
+  ~20× — with the winding span preserved (35.3 → 34.6, no oversmoothing), at
+  **zero ground-truth cost** (slab center slice: slope +0.833, residual median
+  0.29, intra-MAD 0.92 — matching the best per-slice result). The joint solve
+  of all 5 slices (264 s) is faster than five independents.
+
+  ![slab](figures/slab_result.png)
+
 ## Relation to existing community work
 
 Two community projects attack the same problem with different machinery, and this
