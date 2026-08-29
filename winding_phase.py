@@ -173,7 +173,8 @@ def integrate_phase_multiscale(kx, ky, w, mask, factors=(4, 2, 1), pairs=None):
 
 
 def ridge_pairs(img: np.ndarray, theta_out: tuple, amp: np.ndarray, mask: np.ndarray,
-                min_gap: int = 3, max_gap: int = 45, amp_q: float = 55.0):
+                min_gap: int = 3, max_gap: int = 45, amp_q: float = 55.0,
+                kmag: np.ndarray = None):
     """Detect sheet ridges and, for each ridge pixel, march outward along the
     sheet normal to the next ridge — emitting a (+2π between these two points)
     constraint. These ARE relative winding annotations, generated automatically."""
@@ -198,13 +199,21 @@ def ridge_pairs(img: np.ndarray, theta_out: tuple, amp: np.ndarray, mask: np.nda
     hit_y = np.full(ry.size, -1, int)
     hit_x = np.full(ry.size, -1, int)
     alive = np.ones(ry.size, bool)
+    # damage-aware gate: a ridge may only march ~3.5 local wavelengths before we
+    # stop trusting that the next ridge found is the adjacent winding
+    if kmag is not None:
+        lam = 2 * np.pi / np.maximum(kmag[ry, rx], 1e-3)
+        tmax = np.clip(3.5 * lam, min_gap + 2, max_gap).astype(int)
+    else:
+        tmax = np.full(ry.size, max_gap)
     for t in range(min_gap, max_gap + 1):
         qy = np.clip((ry + diry * t).round().astype(int), 0, ny - 1)
         qx = np.clip((rx + dirx * t).round().astype(int), 0, nx - 1)
-        is_hit = alive & ridge[qy, qx]
+        is_hit = alive & (t <= tmax) & ridge[qy, qx]
         hit_y[is_hit] = qy[is_hit]
         hit_x[is_hit] = qx[is_hit]
         alive &= ~is_hit
+        alive &= t < tmax
         if not alive.any():
             break
     got = hit_y >= 0
@@ -233,7 +242,7 @@ def winding_coordinate(img: np.ndarray, mask: np.ndarray, core: tuple[float, flo
     a95 = np.percentile(amp[mask], 95) + 1e-9
     w = coh * np.clip(amp / a95, 0, 1)
     w = np.where(mask, w, 0.0)
-    pairs = ridge_pairs(img, (nxv, nyv), amp, mask, max_gap=ridge_max_gap)
+    pairs = ridge_pairs(img, (nxv, nyv), amp, mask, max_gap=ridge_max_gap, kmag=kmag)
     n_pairs = len(pairs[0])
     phi, info = integrate_phase_multiscale(kx, ky, w, mask, pairs=pairs)
     print(f"  ridge-adjacency constraints: {n_pairs}")

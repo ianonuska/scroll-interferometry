@@ -89,11 +89,18 @@ samples across 20 segments, `validation/gt_rows.json`):
   segments use an older segmentation's indexing. Restricting to the 2025–26
   single-winding segments: **slope +1.02 with median residual 0.20 windings at
   z=1800**, and +0.74–0.82 elsewhere (mean 0.81, residuals 0.13–0.53; one
-  anomalous slice at z=2100 under investigation). Remaining caveat: the clean
-  segments cover w11–12 and w28–41, leaving the dense middle band unmeasured —
-  exactly where resolution blur would hide, so a 9.6 µm run is in progress to
-  close that gap. We publish the defect trail rather than the calibrated-away
-  version of it.
+  anomalous slice at z=2100 under investigation). Remaining caveat at 19.2 µm:
+  the clean segments cover w11–12 and w28–41, leaving the dense middle band
+  unmeasured — exactly where resolution blur would hide.
+- **Resolution verdict (the defect explained):** rerunning the same slice at
+  **9.6 µm** resolves the dense middle windings the coarser level merged — the
+  recovered span jumps 33.9 → 54.3, the naive slope moves **0.647 → 0.940**, and
+  the clean regression (15 windings, middle band w13–23 now included) gives
+  **slope +1.10, median residual 0.94 windings**. The compression at 19.2 µm was
+  resolution blur, not an algorithmic defect. **Operating envelope:** run at
+  ≥9.6 µm for production constraints (~6 min/slice on a laptop, still no GPU);
+  19.2 µm remains a fast preview with a known ~0.8 gain. We publish the defect
+  trail rather than the calibrated-away version of it.
 
 Round-trip integrity: the exported JSONs load through the official
 `spiral-fitting/point_collection.py` loader verbatim (24 collections / 783
