@@ -82,6 +82,28 @@ plus a second in progress. Next, in order:
 4. Damage-aware gating of ridge marching; multi-core/branch handling.
 5. 3D-native solve.
 
+## Relation to existing community work
+
+Two community projects attack the same problem with different machinery, and this
+work should be read alongside them:
+
+- **winding-sync** (Joseph Balmaceda) derives relative winding constraints from
+  structure-tensor lamina *orientation* and reconciles contradictions globally as
+  L1 integer synchronization.
+- **winding-ruler** (pscamillo) measures winding-pitch evidence across scrolls.
+
+What this repo adds beyond orientation-only approaches: the **frequency channel**
+— steered quadrature measures local winding *spacing*, not just direction, which
+is strictly more information per voxel; a **continuous dense winding field**
+(every voxel gets a coordinate, not only reconciled discrete constraints) from a
+convex weighted least-squares solve — no integer programming; **quality maps**
+(coherence × fringe amplitude) that say where the answer is trustworthy; and a
+cheap **external validation** trick (winding count × mean circumference vs.
+known unrolled length) others can adopt. Whether continuous-field or integer-sync
+wins in fit_spiral practice is an empirical question — benchmarking against
+winding-sync's outputs is on the roadmap, and combining them (our field as its
+prior) may beat both.
+
 Feedback, failure cases, and prior art welcome — especially if you've tried a
 frequency-domain framing before.
 
