@@ -140,10 +140,21 @@ def integrate_phase(kx: np.ndarray, ky: np.ndarray, w: np.ndarray, mask: np.ndar
                     (np.concatenate(rows), np.concatenate(cols))), shape=(n, n)).tocsr()
     # anchor gauge
     A[0, 0] += 1.0
-    # Jacobi preconditioner
-    from scipy.sparse import diags
-    d = A.diagonal()
-    M = diags(1.0 / np.maximum(d, 1e-8))
+    # Preconditioner: algebraic multigrid when available (essential for
+    # large domains — Jacobi-PCG stalls beyond ~5M unknowns), Jacobi fallback.
+    M = None
+    if n > 500_000:
+        try:
+            import pyamg
+            ml = pyamg.smoothed_aggregation_solver(A.tocsr(), max_coarse=500)
+            M = ml.aspreconditioner(cycle='V')
+        except Exception as e:
+            import sys
+            print(f"pyamg unavailable ({e}); falling back to Jacobi", file=sys.stderr)
+    if M is None:
+        from scipy.sparse import diags
+        d = A.diagonal()
+        M = diags(1.0 / np.maximum(d, 1e-8))
     phi_flat, info = cg(A, b, rtol=tol, maxiter=maxiter, M=M, x0=x0)
     phi = np.full(mask.shape, np.nan)
     phi.ravel()[ids] = phi_flat
