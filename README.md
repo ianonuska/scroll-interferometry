@@ -82,13 +82,18 @@ samples across 20 segments, `validation/gt_rows.json`):
   winding — intra-segment MAD median **0.90 windings** (p90 2.2).
 - **Ordering:** winding order matches ground truth with median |residual|
   **0.25–1.2 windings** per slice against a linear map.
-- **Known defect, under investigation:** the linear slope is **0.65–0.77, not
-  1.0** — the field systematically merges ~1 in 3 windings, consistent with
-  adjacent sheets blurring together at the 19.2 µm working resolution in densely
-  packed zones (the same ~0.75 ratio appears against naive ray peak counts).
-  A finer-resolution (9.6 µm) run to isolate the cause is in progress; outlier
-  segments (max residuals ~8) concentrate where the fit is least constrained.
-  We publish the defect rather than the calibrated-away version of it.
+- **Slope, honestly accounted:** the naive regression gives 0.65–0.77 — but an
+  outlier autopsy showed a third of that deficit was *defective ground truth*:
+  one released segment labeled `w011` contains ~200k points spanning ~5 windings
+  internally (an umbrella segment, not a single winding), and three 2024-era
+  segments use an older segmentation's indexing. Restricting to the 2025–26
+  single-winding segments: **slope +1.02 with median residual 0.20 windings at
+  z=1800**, and +0.74–0.82 elsewhere (mean 0.81, residuals 0.13–0.53; one
+  anomalous slice at z=2100 under investigation). Remaining caveat: the clean
+  segments cover w11–12 and w28–41, leaving the dense middle band unmeasured —
+  exactly where resolution blur would hide, so a 9.6 µm run is in progress to
+  close that gap. We publish the defect trail rather than the calibrated-away
+  version of it.
 
 Round-trip integrity: the exported JSONs load through the official
 `spiral-fitting/point_collection.py` loader verbatim (24 collections / 783
