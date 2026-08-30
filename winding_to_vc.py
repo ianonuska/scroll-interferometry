@@ -51,39 +51,60 @@ def export(W, quality, z_index, scale, out_prefix,
     core = (float(xs.mean()), float(ys.mean()))
     ny, nx = W.shape
 
-    # ---- relative-winding pearl strings along rays
+    # ---- relative-winding pearl strings along GRADIENT STREAMLINES of W.
+    # Straight rays assume the scroll is star-convex around the core; squashed
+    # scrolls are not, and a ray can re-enter windings, producing collections
+    # whose wind_a oscillates — self-contradictory constraints. Streamlines of
+    # +grad(W) are monotone in W by construction on any geometry.
     rel = {}
     cid = 0
-    for ang in np.linspace(0, 2 * np.pi, n_rays, endpoint=False):
-        ts = np.arange(0, max(ny, nx), 0.5)
-        rx = core[0] + ts * np.cos(ang)
-        ry = core[1] + ts * np.sin(ang)
-        ok = (rx >= 0) & (rx < nx - 1) & (ry >= 0) & (ry < ny - 1)
-        rx, ry = rx[ok], ry[ok]
-        inb = mask[ry.astype(int), rx.astype(int)]
-        if inb.sum() < 20:
-            continue
-        Wray = ndi.map_coordinates(np.nan_to_num(W), [ry, rx], order=1)
-        Qray = ndi.map_coordinates(quality, [ry, rx], order=1)
-        Wray = np.where(inb & (Qray > q_thresh), Wray, np.nan)
-        # walk outward, drop a pearl at each integer winding crossing
-        pearls, winds = [], []
-        base = None
-        for i in range(1, len(ts[ok])):
-            a, b = Wray[i - 1], Wray[i]
-            if not (np.isfinite(a) and np.isfinite(b)) or b == a:
-                continue
-            lo, hi = sorted((a, b))
-            for m in range(int(np.ceil(lo)), int(np.floor(hi)) + 1):
-                f = (m - a) / (b - a)
-                px, py = rx[i - 1] + f * (rx[i] - rx[i - 1]), ry[i - 1] + f * (ry[i] - ry[i - 1])
-                if base is None:
-                    base = m
-                pearls.append((z_index * scale, py * scale, px * scale))
-                winds.append(m - base)
-        if len(pearls) >= 4:
-            rel[str(cid)] = _collection(cid, f"auto_rel_ray{cid:02d}", pearls, winds)
-            cid += 1
+    gy, gx = np.gradient(ndi.gaussian_filter(np.nan_to_num(W), 3.0))
+    gnorm = np.hypot(gx, gy) + 1e-9
+    ux_f, uy_f = gx / gnorm, gy / gnorm
+    # seeds: points near the inner end of the field, spread by angle around core
+    Wmin = np.nanpercentile(np.where(mask, W, np.nan), 3)
+    seed_band = mask & np.isfinite(W) & (W < Wmin + 1.5)
+    sy, sx = np.nonzero(seed_band)
+    if sy.size:
+        angs = np.arctan2(sy - core[1], sx - core[0])
+        order_idx = np.argsort(angs)
+        picks = order_idx[np.linspace(0, order_idx.size - 1, n_rays).astype(int)]
+        step = 2.0
+        max_steps = int(3 * max(ny, nx) / step)
+        for p_i in picks:
+            x, y = float(sx[p_i]), float(sy[p_i])
+            pearls, winds = [], []
+            base = None
+            w_prev = None
+            for _ in range(max_steps):
+                xi, yi = int(round(x)), int(round(y))
+                if not (0 <= xi < nx and 0 <= yi < ny) or not mask[yi, xi]:
+                    break
+                w_here = W[yi, xi]
+                q_here = quality[yi, xi]
+                if np.isfinite(w_here) and q_here > q_thresh and w_prev is not None and w_here > w_prev:
+                    for m in range(int(np.ceil(w_prev)), int(np.floor(w_here)) + 1):
+                        if base is None:
+                            base = m
+                        pearls.append((z_index * scale, y * scale, x * scale))
+                        winds.append(m - base)
+                if np.isfinite(w_here):
+                    w_prev = w_here
+                dx_, dy_ = ux_f[yi, xi], uy_f[yi, xi]
+                if not (np.isfinite(dx_) and np.isfinite(dy_)):
+                    break
+                x += step * dx_
+                y += step * dy_
+            # enforce strict monotonicity (streamline should guarantee it, but
+            # guard against blur-field loops): keep the increasing prefix run
+            if len(pearls) >= 4:
+                keep_p, keep_w = [pearls[0]], [winds[0]]
+                for pt, wv in zip(pearls[1:], winds[1:]):
+                    if wv > keep_w[-1]:
+                        keep_p.append(pt); keep_w.append(wv)
+                if len(keep_p) >= 4:
+                    rel[str(cid)] = _collection(cid, f"auto_rel_stream{cid:02d}", keep_p, keep_w)
+                    cid += 1
 
     # ---- same-winding contours
     same = {}
