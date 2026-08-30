@@ -68,22 +68,23 @@ def export(W, quality, z_index, scale, out_prefix,
     valid_dir = den > 0.35
     gnorm = np.hypot(gx, gy) + 1e-9
     ux_f, uy_f = gx / gnorm, gy / gnorm
-    # seeds: points near the inner end of the field, spread by angle around core
-    Wmin = np.nanpercentile(np.where(mask, W, np.nan), 3)
-    seed_band = mask & np.isfinite(W) & (W < Wmin + 1.5)
-    sy, sx = np.nonzero(seed_band)
-    if sy.size:
-        angs = np.arctan2(sy - core[1], sx - core[0])
-        order_idx = np.argsort(angs)
-        picks = order_idx[np.linspace(0, order_idx.size - 1, n_rays).astype(int)]
-        step = 2.0
-        max_steps = int(3 * max(ny, nx) / step)
-        for p_i in picks:
-            x, y = float(sx[p_i]), float(sy[p_i])
+    # seeds: a well-spread grid of HIGH-QUALITY points across the whole field
+    # (seeding at the winding minimum lands in the crushed core, where damage
+    # kills walks immediately). From each seed, walk both +grad and -grad,
+    # then splice into one monotone pearl string.
+    step = 2.0
+    hole_limit = 24          # coast up to ~3 local wavelengths of damage
+    max_steps = int(3 * max(ny, nx) / step)
+    n_seeds = max(n_rays * 4, 96)
+    qgood = mask & (quality > np.nanpercentile(np.where(mask, quality, np.nan), 60))
+    gy2, gx2 = np.nonzero(qgood)
+    if gy2.size:
+        picks = np.random.default_rng(0).choice(gy2.size, min(n_seeds, gy2.size), replace=False)
+
+        def walk(x, y, sgn):
+            out = []
             holes = 0
             last_dx, last_dy = 1.0, 0.0
-            pearls, winds = [], []
-            base = None
             w_prev = None
             for _ in range(max_steps):
                 xi, yi = int(round(x)), int(round(y))
@@ -91,37 +92,40 @@ def export(W, quality, z_index, scale, out_prefix,
                     break
                 if not mask[yi, xi]:
                     holes += 1
-                    if holes > 6:
+                    if holes > hole_limit:
                         break
-                    x += step * last_dx; y += step * last_dy
+                    x += sgn * step * last_dx; y += sgn * step * last_dy
                     continue
                 holes = 0
                 w_here = W[yi, xi]
-                q_here = quality[yi, xi]
-                if np.isfinite(w_here) and q_here > q_thresh and w_prev is not None and w_here > w_prev:
-                    for m in range(int(np.ceil(w_prev)), int(np.floor(w_here)) + 1):
-                        if base is None:
-                            base = m
-                        pearls.append((z_index * scale, y * scale, x * scale))
-                        winds.append(m - base)
-                if np.isfinite(w_here):
+                if np.isfinite(w_here) and quality[yi, xi] > q_thresh:
+                    if w_prev is not None and (w_here - w_prev) * sgn > 0:
+                        lo, hi = sorted((w_prev, w_here))
+                        for m in range(int(np.ceil(lo)), int(np.floor(hi)) + 1):
+                            out.append((m, x, y))
                     w_prev = w_here
                 dx_, dy_ = ux_f[yi, xi], uy_f[yi, xi]
                 if not valid_dir[yi, xi] or not (np.isfinite(dx_) and np.isfinite(dy_)):
                     break
                 last_dx, last_dy = dx_, dy_
-                x += step * dx_
-                y += step * dy_
-            # enforce strict monotonicity (streamline should guarantee it, but
-            # guard against blur-field loops): keep the increasing prefix run
-            if len(pearls) >= 4:
-                keep_p, keep_w = [pearls[0]], [winds[0]]
-                for pt, wv in zip(pearls[1:], winds[1:]):
-                    if wv > keep_w[-1]:
-                        keep_p.append(pt); keep_w.append(wv)
-                if len(keep_p) >= 4:
-                    rel[str(cid)] = _collection(cid, f"auto_rel_stream{cid:02d}", keep_p, keep_w)
-                    cid += 1
+                x += sgn * step * dx_
+                y += sgn * step * dy_
+            return out
+
+        for p_i in picks:
+            x0_, y0_ = float(gx2[p_i]), float(gy2[p_i])
+            fwd = walk(x0_, y0_, +1)
+            bwd = walk(x0_, y0_, -1)
+            merged = {}
+            for m, x, y in bwd + fwd:      # fwd overwrites duplicates at the seam
+                merged[m] = (x, y)
+            ms = sorted(merged)
+            if len(ms) >= 4:
+                base = ms[0]
+                pearls = [(z_index * scale, merged[m][1] * scale, merged[m][0] * scale) for m in ms]
+                winds = [m - base for m in ms]
+                rel[str(cid)] = _collection(cid, f"auto_rel_stream{cid:02d}", pearls, winds)
+                cid += 1
 
     # ---- same-winding contours
     same = {}
