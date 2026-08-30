@@ -1,7 +1,10 @@
-# scroll-interferometry
+# scroll-interferometry — the winding meter
 
-**Automated relative winding annotations for Herculaneum scrolls, by treating the
-CT cross-section as an interferogram.**
+**A winding meter for Herculaneum scrolls: automated relative winding
+annotations, by treating the CT cross-section as an interferogram.** The tool
+measures each pixel's winding coordinate the way a fringe analyzer reads an
+interferogram — it is a measuring instrument, not a fitter; its output drops
+into the community's spiral fitter as annotations.
 
 Work-in-progress toward Vesuvius Challenge Open Problem #6 (winding-number
 automation — "automating relative winding number annotations will boost
