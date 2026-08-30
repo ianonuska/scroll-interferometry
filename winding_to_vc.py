@@ -68,6 +68,11 @@ def export(W, quality, z_index, scale, out_prefix,
     valid_dir = den > 0.35
     gnorm = np.hypot(gx, gy) + 1e-9
     ux_f, uy_f = gx / gnorm, gy / gnorm
+    # quality gate: |grad W| is the local winding density (windings/px); where
+    # the implied wavelength drops below the resolvable limit the field merges
+    # windings and its deltas under-count — assert nothing there.
+    min_wavelength_px = 6.0
+    resolved = gnorm < (1.0 / min_wavelength_px)
     # seeds: a well-spread grid of HIGH-QUALITY points across the whole field
     # (seeding at the winding minimum lands in the crushed core, where damage
     # kills walks immediately). From each seed, walk both +grad and -grad,
@@ -99,11 +104,17 @@ def export(W, quality, z_index, scale, out_prefix,
                 holes = 0
                 w_here = W[yi, xi]
                 if np.isfinite(w_here) and quality[yi, xi] > q_thresh:
-                    if w_prev is not None and (w_here - w_prev) * sgn > 0:
+                    if not resolved[yi, xi]:
+                        # compression-suspect region: break the chain so no
+                        # delta is asserted across it
+                        w_prev = None
+                    elif w_prev is not None and (w_here - w_prev) * sgn > 0:
                         lo, hi = sorted((w_prev, w_here))
                         for m in range(int(np.ceil(lo)), int(np.floor(hi)) + 1):
                             out.append((m, x, y))
-                    w_prev = w_here
+                        w_prev = w_here
+                    else:
+                        w_prev = w_here
                 dx_, dy_ = ux_f[yi, xi], uy_f[yi, xi]
                 if not valid_dir[yi, xi] or not (np.isfinite(dx_) and np.isfinite(dy_)):
                     break
