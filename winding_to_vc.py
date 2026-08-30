@@ -58,7 +58,14 @@ def export(W, quality, z_index, scale, out_prefix,
     # +grad(W) are monotone in W by construction on any geometry.
     rel = {}
     cid = 0
-    gy, gx = np.gradient(ndi.gaussian_filter(np.nan_to_num(W), 3.0))
+    # mask-aware (normalized-convolution) smoothing: holes and the outside
+    # region must not inject fake values into the gradient field
+    maskf = mask.astype(np.float64)
+    num = ndi.gaussian_filter(np.where(mask, W, 0.0), 3.0)
+    den = ndi.gaussian_filter(maskf, 3.0)
+    Ws = np.where(den > 0.2, num / np.maximum(den, 1e-9), np.nan)
+    gy, gx = np.gradient(np.nan_to_num(Ws))
+    valid_dir = den > 0.35
     gnorm = np.hypot(gx, gy) + 1e-9
     ux_f, uy_f = gx / gnorm, gy / gnorm
     # seeds: points near the inner end of the field, spread by angle around core
@@ -73,13 +80,22 @@ def export(W, quality, z_index, scale, out_prefix,
         max_steps = int(3 * max(ny, nx) / step)
         for p_i in picks:
             x, y = float(sx[p_i]), float(sy[p_i])
+            holes = 0
+            last_dx, last_dy = 1.0, 0.0
             pearls, winds = [], []
             base = None
             w_prev = None
             for _ in range(max_steps):
                 xi, yi = int(round(x)), int(round(y))
-                if not (0 <= xi < nx and 0 <= yi < ny) or not mask[yi, xi]:
+                if not (0 <= xi < nx and 0 <= yi < ny):
                     break
+                if not mask[yi, xi]:
+                    holes += 1
+                    if holes > 6:
+                        break
+                    x += step * last_dx; y += step * last_dy
+                    continue
+                holes = 0
                 w_here = W[yi, xi]
                 q_here = quality[yi, xi]
                 if np.isfinite(w_here) and q_here > q_thresh and w_prev is not None and w_here > w_prev:
@@ -91,8 +107,9 @@ def export(W, quality, z_index, scale, out_prefix,
                 if np.isfinite(w_here):
                     w_prev = w_here
                 dx_, dy_ = ux_f[yi, xi], uy_f[yi, xi]
-                if not (np.isfinite(dx_) and np.isfinite(dy_)):
+                if not valid_dir[yi, xi] or not (np.isfinite(dx_) and np.isfinite(dy_)):
                     break
+                last_dx, last_dy = dx_, dy_
                 x += step * dx_
                 y += step * dy_
             # enforce strict monotonicity (streamline should guarantee it, but
