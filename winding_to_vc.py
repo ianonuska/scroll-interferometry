@@ -87,7 +87,10 @@ def export(W, quality, z_index, scale, out_prefix,
         picks = np.random.default_rng(0).choice(gy2.size, min(n_seeds, gy2.size), replace=False)
 
         def walk(x, y, sgn):
-            out = []
+            # returns list of SEGMENTS; a resolution-gate break closes the
+            # current segment so no delta is ever asserted across the gap
+            segs = [[]]
+            out = segs[-1]
             holes = 0
             last_dx, last_dy = 1.0, 0.0
             w_prev = None
@@ -105,9 +108,10 @@ def export(W, quality, z_index, scale, out_prefix,
                 w_here = W[yi, xi]
                 if np.isfinite(w_here) and quality[yi, xi] > q_thresh:
                     if not resolved[yi, xi]:
-                        # compression-suspect region: break the chain so no
-                        # delta is asserted across it
                         w_prev = None
+                        if out:
+                            segs.append([])
+                            out = segs[-1]
                     elif w_prev is not None and (w_here - w_prev) * sgn > 0:
                         lo, hi = sorted((w_prev, w_here))
                         for m in range(int(np.ceil(lo)), int(np.floor(hi)) + 1):
@@ -121,19 +125,30 @@ def export(W, quality, z_index, scale, out_prefix,
                 last_dx, last_dy = dx_, dy_
                 x += sgn * step * dx_
                 y += sgn * step * dy_
-            return out
+            return [s for s in segs if s]
 
         for p_i in picks:
             x0_, y0_ = float(gx2[p_i]), float(gy2[p_i])
-            fwd = walk(x0_, y0_, +1)
-            bwd = walk(x0_, y0_, -1)
-            merged = {}
-            for m, x, y in bwd + fwd:      # fwd overwrites duplicates at the seam
-                merged[m] = (x, y)
-            ms = sorted(merged)
-            if len(ms) >= 4:
+            fwd_segs = walk(x0_, y0_, +1)
+            bwd_segs = walk(x0_, y0_, -1)
+            # the seed-adjacent fwd and bwd segments share an unbroken path
+            # through the seed, so they may merge; all other segments stand alone
+            joint = {}
+            if bwd_segs:
+                for m, x, y in bwd_segs[0]:
+                    joint[m] = (x, y)
+            if fwd_segs:
+                for m, x, y in fwd_segs[0]:
+                    joint[m] = (x, y)
+            groups = [joint] if joint else []
+            for seg in bwd_segs[1:] + fwd_segs[1:]:
+                groups.append({m: (x, y) for m, x, y in seg})
+            for g in groups:
+                ms = sorted(g)
+                if len(ms) < 4:
+                    continue
                 base = ms[0]
-                pearls = [(z_index * scale, merged[m][1] * scale, merged[m][0] * scale) for m in ms]
+                pearls = [(z_index * scale, g[m][1] * scale, g[m][0] * scale) for m in ms]
                 winds = [m - base for m in ms]
                 rel[str(cid)] = _collection(cid, f"auto_rel_stream{cid:02d}", pearls, winds)
                 cid += 1
