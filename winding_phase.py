@@ -138,12 +138,30 @@ def integrate_phase(kx: np.ndarray, ky: np.ndarray, w: np.ndarray, mask: np.ndar
         np.add.at(b, iA, -wcv * dv)
     A = coo_matrix((np.concatenate([np.asarray(v, float) for v in vals]),
                     (np.concatenate(rows), np.concatenate(cols))), shape=(n, n)).tocsr()
+    # The masked domain can shatter into many disconnected components (debris,
+    # erosion specks, coarse-level subsampling). Each component has its own
+    # floating gauge, so the full system is singular and CG stalls. Solve only
+    # the largest component; everything else gets NaN.
+    from scipy.sparse.csgraph import connected_components
+    ncomp, labels = connected_components(A, directed=False)
+    if ncomp > 1:
+        import sys as _sys
+        big = np.argmax(np.bincount(labels))
+        keep = labels == big
+        print(f"  (mask has {ncomp} disconnected components; solving largest "
+              f"= {int(keep.sum())}/{n} px)", file=_sys.stderr)
+        A = A[keep][:, keep].tocsr()
+        b = b[keep]
+        if x0 is not None:
+            x0 = x0[keep]
+    else:
+        keep = None
     # anchor gauge
     A[0, 0] += 1.0
     # Preconditioner: algebraic multigrid when available (essential for
     # large domains — Jacobi-PCG stalls beyond ~5M unknowns), Jacobi fallback.
     M = None
-    if n > 500_000:
+    if A.shape[0] > 200_000:
         try:
             import pyamg
             ml = pyamg.smoothed_aggregation_solver(A.tocsr(), max_coarse=500)
@@ -156,8 +174,13 @@ def integrate_phase(kx: np.ndarray, ky: np.ndarray, w: np.ndarray, mask: np.ndar
         d = A.diagonal()
         M = diags(1.0 / np.maximum(d, 1e-8))
     phi_flat, info = cg(A, b, rtol=tol, maxiter=maxiter, M=M, x0=x0)
+    full_flat = np.full(n, np.nan)
+    if keep is None:
+        full_flat[:] = phi_flat
+    else:
+        full_flat[keep] = phi_flat
     phi = np.full(mask.shape, np.nan)
-    phi.ravel()[ids] = phi_flat
+    phi.ravel()[ids] = full_flat
     return phi, info
 
 
@@ -173,7 +196,10 @@ def integrate_phase_multiscale(kx, ky, w, mask, factors=None, pairs=None,
     for f in factors:
         if f > 1:
             sl = (slice(None, None, f), slice(None, None, f))
-            kxs, kys, ws, ms = kx[sl] * f, ky[sl] * f, w[sl], mask[sl]
+            # dilate-then-sample keeps the coarse mask connected where the
+            # fine mask is (strided sampling shatters it into islands)
+            mdil = ndi.maximum_filter(mask.astype(np.uint8), size=f) > 0
+            kxs, kys, ws, ms = kx[sl] * f, ky[sl] * f, w[sl], mdil[sl]
         else:
             kxs, kys, ws, ms = kx, ky, w, mask
         x0 = None
@@ -181,6 +207,8 @@ def integrate_phase_multiscale(kx, ky, w, mask, factors=None, pairs=None,
             up = ndi.zoom(np.nan_to_num(phi0), (ms.shape[0] / phi0.shape[0],
                                                 ms.shape[1] / phi0.shape[1]), order=1)
             x0 = up[ms]
+            if not np.all(np.isfinite(x0)):
+                x0 = np.nan_to_num(x0)
         phi, info = integrate_phase(kxs, kys, ws, ms, x0=x0,
                                     maxiter=3000 if f > 1 else finest_maxiter,
                                     pairs=pairs if f == 1 else None)
