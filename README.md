@@ -126,6 +126,15 @@ collections (408 points)**, machine-generated in seconds.
 
 ## Run it
 
+### Docker (reproducible)
+
+    docker build -t winding-meter .
+    mkdir -p out && docker run --rm -v $PWD/out:/out winding-meter
+
+Streams a PHerc1667 slice from the public S3 bucket and writes the winding
+field + exported annotation JSONs — no local data needed.
+
+
 ```bash
 pip install numpy scipy zarr s3fs matplotlib pillow
 python examples/run_demo.py     # streams a PHerc 1667 slice, solves, exports
