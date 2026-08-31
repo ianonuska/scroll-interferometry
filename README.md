@@ -107,10 +107,9 @@ samples across 20 segments, `validation/gt_rows.json`):
 
 Round-trip integrity: the exported JSONs load through the official
 `spiral-fitting/point_collection.py` loader verbatim (24 collections / 783
-points relative + 17 / 408 same-winding). Note the full spiral fitter requires a
-CUDA host; the fit-quality-vs-annotations benchmark will run there.
+points relative + 17 / 408 same-winding). The full spiral fitter requires a CUDA host; benchmark results below.
 
-## Output: drop-in spiral-fitting constraints
+## Output: spiral-fitting constraint files (format-verified)
 
 `winding_to_vc.py` exports the field as `vc_pointcollections_json_version: 1`
 files matching the spiral-input dataset conventions (full-resolution `[z,y,x]`
@@ -140,17 +139,47 @@ pip install numpy scipy zarr s3fs matplotlib pillow
 python examples/run_demo.py     # streams a PHerc 1667 slice, solves, exports
 ```
 
-## Status & roadmap (honest)
+## Status & the benchmark results (updated Aug 31 — negatives included)
 
-Early. 2D per-slice with a single-core spiral assumption; validated on one scroll
-plus a second in progress. Next, in order:
+The fit_spiral benchmark ran on PHercParis4 (z 8500–9500, production config,
+30k steps, scored by the fitter's own satisfaction metrics over the identical
+89,237-patch verified set). Read the failures before the successes:
 
-1. Multi-slice with z-continuity → pseudo-3D winding volumes (in progress).
-2. The benchmark that matters: spiral-fit quality vs. number of manual
-   annotations replaced, on a region with a community-accepted fit.
-3. Generalization across preservation states (second scroll in progress).
-4. Damage-aware gating of ridge marching; multi-core/branch handling.
-5. 3D-native solve.
+| Run | Annotations | Satisfied patches | Satisfied area |
+|---|---|---|---|
+| A — manual | 2,173 human points | 52.0% | 75.9% |
+| **A+Bf** — human + loop-vetted machine | +379 vetted machine points | **51.6%** | **75.3%** |
+| C — none | 0 | 48.5% | 71.1% |
+| B raw machine (best of 5 attempts) | 1,086 points | 44.2% | 66.7% |
+
+**What this does and does not show.** Raw machine annotations as a drop-in
+replacement HURT the fit (44.2% < C's 48.5%): the field under-counts windings
+across compressed regions at this scan resolution (measured slope 0.647 vs.
+manual over long spans; local correlation 0.93). A feedback loop that vets
+each machine constraint against a fitted spiral and drops the untrustworthy
+ones brings the human+machine combination to statistical parity with human
+annotations alone — on this exploration band. **No claim of improvement over
+manual annotations is made.** A pre-registered confirmatory run on a held-out
+z-band (11000–12000, untouched by any debugging decision) is in progress and
+will be reported here regardless of outcome. Getting to this table consumed
+eight root-caused bugs (thread caps, non-comparable losses, clobbered
+checkpoints, silent CG non-convergence, a resolution-envelope violation, a
+stitched-volume coordinate frame, non-star-convex ray sampling, gradient
+vortices at damage holes) — each fixed in this repo's history with its
+diagnosis in the commit message.
+
+Also measured along the way: under the current production config, the manual
+annotations themselves contribute only ~3.5 satisfaction points over no
+annotations at all (A vs C) — the learned winding_model store carries most of
+that signal now.
+
+### Roadmap
+
+1. Confirmatory held-out-band results (running).
+2. Close the compression gap: resolution escalation in flagged regions
+   (2.4 µm partial scans) + fit-feedback constraint refinement.
+3. Patch auto-verification via winding-field consistency.
+4. 3D-native solve.
 
 ## Ablations & extensions (running log)
 
