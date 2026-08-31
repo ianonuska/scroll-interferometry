@@ -154,6 +154,25 @@ spread will be added to this table:
 | C — none | 0 | 48.5% | 71.1% |
 | B raw machine (best of 5 attempts) | 1,086 points | 44.2% | 66.7% |
 
+**Confirmatory (held-out) band results — z 11000–12000, untouched by any
+debugging decision, single pre-declared run per arm:**
+
+| Held-out band | Satisfied patches | Satisfied area |
+|---|---|---|
+| confA — manual (run twice) | 54.6% / 55.1% | 77.1% / 77.1% |
+| confC — no annotations | 53.6% | 76.8% |
+| confA+Bf — manual + vetted machine | 50.0% | 77.1% |
+
+Two verdicts. (1) **The redundancy finding replicated and strengthened**:
+manual annotations are worth ~1–1.5 points here against a ±0.5 run-to-run
+noise floor — out-of-band confirmation of pscamillo's result by an
+independent method. (2) **The exploration-band parity claim FAILED
+replication**: the vetted combination lands below even the no-annotation
+control. We report this as the headline for that arm. The annotation input
+port is the wrong integration point for this instrument (see roadmap:
+re-socketing as the dense winding-inference store for scrolls that lack
+one).
+
 **What this does and does not show.** Raw machine annotations as a drop-in
 replacement HURT the fit (44.2% < C's 48.5%): the field under-counts windings
 across compressed regions at this scan resolution (measured slope 0.647 vs.
