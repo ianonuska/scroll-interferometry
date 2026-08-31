@@ -44,20 +44,17 @@ def _collection(cid, name, pts_zyx, wind_a=None, color=(1.0, 0.4, 0.0)):
     }
 
 
-def export(W, quality, z_index, scale, out_prefix,
-           n_rays=24, q_thresh=0.05, contour_step=2.0, pts_per_contour=24):
-    mask = np.isfinite(W) & (quality > q_thresh)
-    ys, xs = np.nonzero(mask)
-    core = (float(xs.mean()), float(ys.mean()))
-    ny, nx = W.shape
+def collect_pearl_streams(W, quality, q_thresh=0.05, n_seeds=96):
+    """Walk gradient streamlines of W and return monotone pearl streams.
 
-    # ---- relative-winding pearl strings along GRADIENT STREAMLINES of W.
-    # Straight rays assume the scroll is star-convex around the core; squashed
-    # scrolls are not, and a ray can re-enter windings, producing collections
-    # whose wind_a oscillates — self-contradictory constraints. Streamlines of
-    # +grad(W) are monotone in W by construction on any geometry.
-    rel = {}
-    cid = 0
+    Each stream is a dict {integer winding m: (x, y)} at the analysis level.
+    Streams with fewer than 2 pearls are dropped; callers apply any stricter
+    minimum. This is the single source of pearls for both the point-collection
+    exporter and the winding-inference store encoder, so they cannot diverge.
+    """
+    mask = np.isfinite(W) & (quality > q_thresh)
+    ny, nx = W.shape
+    streams = []
     # mask-aware (normalized-convolution) smoothing: holes and the outside
     # region must not inject fake values into the gradient field
     maskf = mask.astype(np.float64)
@@ -80,7 +77,6 @@ def export(W, quality, z_index, scale, out_prefix,
     step = 2.0
     hole_limit = 24          # coast up to ~3 local wavelengths of damage
     max_steps = int(3 * max(ny, nx) / step)
-    n_seeds = max(n_rays * 4, 96)
     qgood = mask & (quality > np.nanpercentile(np.where(mask, quality, np.nan), 60))
     gy2, gx2 = np.nonzero(qgood)
     if gy2.size:
@@ -144,14 +140,32 @@ def export(W, quality, z_index, scale, out_prefix,
             for seg in bwd_segs[1:] + fwd_segs[1:]:
                 groups.append({m: (x, y) for m, x, y in seg})
             for g in groups:
-                ms = sorted(g)
-                if len(ms) < 4:
-                    continue
-                base = ms[0]
-                pearls = [(z_index * scale, g[m][1] * scale, g[m][0] * scale) for m in ms]
-                winds = [m - base for m in ms]
-                rel[str(cid)] = _collection(cid, f"auto_rel_stream{cid:02d}", pearls, winds)
-                cid += 1
+                if len(g) >= 2:
+                    streams.append(g)
+    return streams
+
+
+def export(W, quality, z_index, scale, out_prefix,
+           n_rays=24, q_thresh=0.05, contour_step=2.0, pts_per_contour=24):
+    mask = np.isfinite(W) & (quality > q_thresh)
+
+    # ---- relative-winding pearl strings along GRADIENT STREAMLINES of W.
+    # Straight rays assume the scroll is star-convex around the core; squashed
+    # scrolls are not, and a ray can re-enter windings, producing collections
+    # whose wind_a oscillates — self-contradictory constraints. Streamlines of
+    # +grad(W) are monotone in W by construction on any geometry.
+    rel = {}
+    cid = 0
+    for g in collect_pearl_streams(W, quality, q_thresh=q_thresh,
+                                   n_seeds=max(n_rays * 4, 96)):
+        ms = sorted(g)
+        if len(ms) < 4:
+            continue
+        base = ms[0]
+        pearls = [(z_index * scale, g[m][1] * scale, g[m][0] * scale) for m in ms]
+        winds = [m - base for m in ms]
+        rel[str(cid)] = _collection(cid, f"auto_rel_stream{cid:02d}", pearls, winds)
+        cid += 1
 
     # ---- same-winding contours
     same = {}
