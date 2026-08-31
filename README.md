@@ -1,10 +1,10 @@
 # scroll-interferometry — the winding meter
 
-**A winding meter for Herculaneum scrolls: automated relative winding
-annotations, by treating the CT cross-section as an interferogram.** The tool
-measures each pixel's winding coordinate the way a fringe analyzer reads an
-interferogram — it is a measuring instrument, not a fitter; its output drops
-into the community's spiral fitter as annotations.
+A winding meter for Herculaneum scrolls: automated relative winding
+annotations, made by treating the CT cross-section as an interferogram.
+It measures a winding coordinate at each pixel. It is a measuring
+instrument, not a fitter. Its output loads into the community's spiral
+fitter as annotations.
 
 Work-in-progress toward Vesuvius Challenge Open Problem #6 (winding-number
 automation — "automating relative winding number annotations will boost
@@ -17,8 +17,7 @@ scalability by a great extent").
 A scroll cross-section is a fringe pattern: the rolled papyrus sheet is
 quasi-periodic, therefore **one winding can be treated as one fringe**, and
 *relative winding number* (the annotation the spiral-fitting pipeline needs and
-currently gets from human annotators) **can be treated as fringe order**. That imports the RF/SAR-interferometry toolbox
-wholesale:
+currently gets from human annotators) **can be treated as fringe order**. This lets us use standard tools from RF/SAR interferometry:
 
 1. **Structure tensor** → local sheet-normal orientation + coherence (a quality
    map for free).
@@ -41,17 +40,17 @@ it seems pretty lean.
 
 ## Day-one validation (PHerc 1667, mid-scroll slice, 19.2 µm)
 
-PHerc 1667 is the scroll read end-to-end in June 2026 — chosen as the dev target
-*because* ground truth exists.
+PHerc 1667 was read end-to-end in June 2026, so ground truth exists. That is
+why it was the dev target.
 
 - **83,098** ridge-adjacency constraints generated automatically; solver fully
   converges on ~950k unknowns.
 - Ray check (8 radial rays): winding span 29.3–31.9 vs. 33–43 naively counted
   sheet-crossing peaks. The field's ray-to-ray spread is **±4%**, versus ±15%
   for the raw peak counts it's checked against.
-- **External check**: the recovered ~30–33 total windings at this scroll's
-  ~36 mm diameter imply ~1.3–1.5 m of rolled papyrus. The published unrolled
-  length of PHerc 1667 is **1.4 m** — recovered from a single slice.
+- External check: ~30–33 recovered windings at ~36 mm diameter imply
+  ~1.3–1.5 m of rolled papyrus. The published unrolled length is 1.4 m.
+  This came from a single slice.
 
 ## Multi-slice and second-scroll results (day one, continued)
 
@@ -59,35 +58,34 @@ PHerc 1667 is the scroll read end-to-end in June 2026 — chosen as the dev targ
   2800 at level 3): winding spans 33.0 / 35.3 / 33.9 / 37.4 / 35.8, every solve
   fully converged. Adjacent-slice fields (solved *independently*, 5.8 mm apart)
   agree after gauge alignment to a median residual of 1.4–2.7 windings
-  (`validation/consistency.json`) — an upper bound that the planned z-coupled
-  solve should tighten substantially, since these solves share no information.
+  (`validation/consistency.json`). These solves share no information, so this
+  is an upper bound; the z-coupled solve below tightens it.
 
   ![multislice](figures/multislice_strip.png)
 
-- **Second scroll, zero re-tuning**: PHerc 172 (the Bodleian scroll whose title
-  *On Vices* won the First Title Prize) — a different scanner, resolution
-  (7.9 µm), and energy (53 keV). The solver converges to a coherent monotonic
-  field of ~67 windings, core to rim. Contours are noisier than on PHerc 1667
-  (denser scroll, different masking) — scan-adaptive preprocessing is on the
-  roadmap, but the method transfers as-is.
+- Second scroll, no re-tuning: PHerc 172 (the Bodleian scroll; its title
+  *On Vices* won the First Title Prize). Different scanner, resolution
+  (7.9 µm), and energy (53 keV). The solver converges to a monotonic field of
+  ~67 windings, core to rim. Contours are noisier than on PHerc 1667;
+  scan-adaptive preprocessing is on the roadmap.
 
   ![second scroll](figures/second_scroll.png)
 
 ## Ground-truth benchmark against the accepted unwrap
 
 PHerc 1667's released per-winding segments (`w011`–`w041`) are the accepted
-solution of the fully-read scroll — direct ground truth. Sampling each segment's
-mesh near our five slices and evaluating our field there (90 segment×slice
-samples across 20 segments, `validation/gt_rows.json`):
+solution of the fully-read scroll. We sample each segment's mesh near our five
+slices and evaluate our field there (90 segment-slice samples across 20
+segments, `validation/gt_rows.json`):
 
 ![gt](figures/gt_benchmark.png)
 
-- **Same-winding coherence:** our field is near-constant within a ground-truth
-  winding — intra-segment MAD median **0.90 windings** (p90 2.2).
+- Same-winding coherence: the field is near-constant within a ground-truth
+  winding. Intra-segment MAD median 0.90 windings (p90 2.2).
 - **Ordering:** winding order matches ground truth with median |residual|
   **0.25–1.2 windings** per slice against a linear map.
-- **Slope, honestly accounted:** the naive regression gives 0.65–0.77 — but an
-  outlier autopsy showed a third of that deficit was *defective ground truth*:
+- Slope: the naive regression gives 0.65–0.77. About a third of the deficit
+  traces to defective ground truth:
   one released segment labeled `w011` contains ~200k points spanning ~5 windings
   internally (an umbrella segment, not a single winding), and three 2024-era
   segments use an older segmentation's indexing. Restricting to the 2025–26
@@ -96,15 +94,14 @@ samples across 20 segments, `validation/gt_rows.json`):
   anomalous slice at z=2100 under investigation). Remaining caveat at 19.2 µm:
   the clean segments cover w11–12 and w28–41, leaving the dense middle band
   unmeasured — exactly where resolution blur would hide.
-- **Resolution verdict (the defect explained):** rerunning the same slice at
+- Resolution: rerunning the same slice at
   **9.6 µm** resolves the dense middle windings the coarser level merged — the
   recovered span jumps 33.9 → 54.3, the naive slope moves **0.647 → 0.940**, and
   the clean regression (15 windings, middle band w13–23 now included) gives
   **slope +1.10, median residual 0.94 windings**. The compression at 19.2 µm was
-  resolution blur, not an algorithmic defect. **Operating envelope:** run at
-  ≥9.6 µm for production constraints (~6 min/slice on a laptop, still no GPU);
-  19.2 µm remains a fast preview with a known ~0.8 gain. We publish the defect
-  trail rather than the calibrated-away version of it.
+  resolution blur, not an algorithmic defect. Operating envelope: run at
+  ≥9.6 µm for production constraints (~6 min/slice on a laptop, no GPU);
+  19.2 µm is a fast preview with a known ~0.8 gain.
 
 Round-trip integrity: the exported JSONs load through the official
 `spiral-fitting/point_collection.py` loader verbatim (24 collections / 783
@@ -148,7 +145,7 @@ python examples/run_demo.py     # streams a PHerc 1667 slice, solves, exports
 
 The fit_spiral benchmark ran on PHercParis4 (z 8500–9500, production config,
 30k steps, scored by the fitter's own satisfaction metrics over the identical
-89,237-patch verified set). Read the failures before the successes. Run A was repeated to measure the
+89,237-patch verified set). Failures are listed with the successes. Run A was repeated to measure the
 run-to-run noise floor: ±0.6 points on patches (52.0 vs 52.6).
 
 | Run | Annotations | Satisfied patches | Satisfied area |
@@ -168,39 +165,36 @@ debugging decision, single pre-declared run per arm:**
 | confC — no annotations | 53.6% | 76.8% |
 | confA+Bf — manual + vetted machine | 50.0% | 77.1% |
 
-Two verdicts. (1) **The redundancy finding replicated and strengthened**:
-manual annotations are worth ~1–1.5 points here against a ±0.5 run-to-run
-noise floor — out-of-band confirmation of pscamillo's result by an
-independent method. (2) **The exploration-band parity claim FAILED
-replication**: the vetted combination lands below even the no-annotation
-control. We report this as the headline for that arm. The annotation input
-port is the wrong integration point for this instrument (see roadmap:
-re-socketing as the dense winding-inference store for scrolls that lack
-one).
+Two results. (1) The redundancy finding replicated: manual annotations are
+worth ~1–1.5 points here, against a ±0.5 noise floor. This confirms
+pscamillo's result out-of-band with an independent method. (2) The
+exploration-band parity claim failed replication: the vetted combination
+lands below even the no-annotation control. That is the headline for that
+arm. Annotations look like the wrong integration point for this instrument;
+see the roadmap for the alternative (encoding the field as a
+winding-inference store for scrolls that lack one).
 
-**What this does and does not show.** Raw machine annotations as a drop-in
-replacement HURT the fit (44.2% < C's 48.5%): the field under-counts windings
+What this shows and does not show: raw machine annotations as a drop-in
+replacement hurt the fit (44.2% < C's 48.5%): the field under-counts windings
 across compressed regions at this scan resolution (measured slope 0.647 vs.
-manual over long spans; local correlation 0.93 — n=15 matched pairs at one
-station, so treat as indicative, not precise). A feedback loop that vets
+manual over long spans; local correlation 0.93, n=15 matched pairs at one
+station, so indicative rather than precise). A feedback loop that vets
 each machine constraint against a fitted spiral and drops the untrustworthy
 ones brought the human+machine combination to statistical parity with human
-annotations alone — on the exploration band only. **That parity did not
-survive the pre-declared held-out replication (table above), and no claim of
-parity or improvement is made.** Getting to this table consumed
-eight root-caused bugs (thread caps, non-comparable losses, clobbered
-checkpoints, silent CG non-convergence, a resolution-envelope violation, a
-stitched-volume coordinate frame, non-star-convex ray sampling, gradient
-vortices at damage holes) — each fixed in this repo's history with its
-diagnosis in the commit message.
+annotations alone, on the exploration band only. That parity did not survive
+the pre-declared held-out replication (table above). No claim of parity or
+improvement is made. Getting to this table took eight root-caused bugs (thread caps,
+non-comparable losses, clobbered checkpoints, silent CG non-convergence, a
+resolution-envelope violation, a stitched-volume coordinate frame,
+non-star-convex ray sampling, gradient vortices at damage holes). Each fix is
+in this repo's history with its diagnosis in the commit message.
 
 Also measured along the way: under the current production config, the manual
 annotations contribute only ~3.5 satisfaction points over no annotations at
-all (A vs C). This replicates and is consistent with pscamillo's earlier,
-more thorough finding (July 2026, "Winding evidence, measured": annotations
-statistically redundant in patch-dense windows, worth +3-5pp in patch-sparse
-ones, 2 seeds per arm) — credit where due; ours is a single-band, single-seed
-corroboration, not a first. pscamillo also reported three constraint
+all (A vs C). This is consistent with pscamillo's earlier, more thorough finding
+(July 2026, "Winding evidence, measured": annotations statistically redundant
+in patch-dense windows, worth +3–5pp in patch-sparse ones, 2 seeds per arm).
+Ours is a single-band, single-seed corroboration, not a first. pscamillo also reported three constraint
 generators degrading fits vs. a no-constraint baseline with root causes in
 lasagna materialization resolution; our generator reads raw CT rather than
 lasagna fields, so our B-run failures have distinct mechanics (documented
@@ -259,7 +253,10 @@ Several community tools sound similar. The differences, one line each:
 | **ScrollAnchor** (olgaiv39) | Per-vertex drift/sheet-switch diagnostics for an existing tifxyz surface | Diagnoses surfaces after they exist; our field exists **before** any surface and can position disconnected pieces globally |
 | **ScrollFiesta** (Kyles) / **scrollreading** (Stevens) | Build and assemble surface meshes from ML predictions | Sheet **builders**. Ours is a **map**: the global winding address their assembled pieces need for placement |
 
-One sentence for all of it: **everyone else labels, builds, checks, or scores pieces; ours is the only tool that measures a continuous winding coordinate for every voxel directly from the raw physics.** Whether that map is accurate enough to matter is an empirical question — scored above, and next against constraint-gauge.
+Summary: the other tools label, build, check, or score pieces. This one
+measures a continuous winding coordinate for every voxel directly from raw
+CT. Whether that map is accurate enough to matter is an empirical question,
+scored above and next against constraint-gauge.
 
 ## Relation to existing community work
 
@@ -271,20 +268,17 @@ work should be read alongside them:
   L1 integer synchronization.
 - **winding-ruler** (pscamillo) measures winding-pitch evidence across scrolls.
 
-What this repo adds beyond orientation-only approaches: the **frequency channel**
-— steered quadrature measures local winding *spacing*, not just direction, which
-is strictly more information per voxel; a **continuous dense winding field**
-(every voxel gets a coordinate, not only reconciled discrete constraints) from a
-convex weighted least-squares solve — no integer programming; **quality maps**
-(coherence × fringe amplitude) that say where the answer is trustworthy; and a
-cheap **external validation** trick (winding count × mean circumference vs.
-known unrolled length) others can adopt. Whether continuous-field or integer-sync
-wins in fit_spiral practice is an empirical question — benchmarking against
-winding-sync's outputs is on the roadmap, and combining them (our field as its
-prior) may beat both.
+What this repo adds beyond orientation-only approaches: a frequency channel
+(steered quadrature measures local winding spacing, not just direction); a
+continuous dense winding field from a convex least-squares solve, with no
+integer programming; quality maps (coherence times fringe amplitude) marking
+where the answer is trustworthy; and a cheap external check (winding count
+times mean circumference vs. known unrolled length). Whether continuous-field
+or integer-sync works better inside fit_spiral is untested. Combining them
+(this field as winding-sync's prior) might beat both.
 
-Feedback, failure cases, and prior art welcome — especially if you've tried a
-frequency-domain framing before.
+Feedback, failure cases, and prior art welcome, especially from anyone who
+has tried a frequency-domain framing before.
 
 ## Data & license
 
