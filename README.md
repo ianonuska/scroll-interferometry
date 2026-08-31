@@ -172,9 +172,18 @@ vortices at damage holes) — each fixed in this repo's history with its
 diagnosis in the commit message.
 
 Also measured along the way: under the current production config, the manual
-annotations themselves contribute only ~3.5 satisfaction points over no
-annotations at all (A vs C) — the learned winding_model store carries most of
-that signal now.
+annotations contribute only ~3.5 satisfaction points over no annotations at
+all (A vs C). This replicates and is consistent with pscamillo's earlier,
+more thorough finding (July 2026, "Winding evidence, measured": annotations
+statistically redundant in patch-dense windows, worth +3-5pp in patch-sparse
+ones, 2 seeds per arm) — credit where due; ours is a single-band, single-seed
+corroboration, not a first. pscamillo also reported three constraint
+generators degrading fits vs. a no-constraint baseline with root causes in
+lasagna materialization resolution; our generator reads raw CT rather than
+lasagna fields, so our B-run failures have distinct mechanics (documented
+above), but the phenomenon has precedent. Next validation step before any
+further claim: scoring this generator through pscamillo's constraint-gauge,
+the community's shared referee for winding generators.
 
 ### Roadmap
 
