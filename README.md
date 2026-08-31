@@ -120,8 +120,12 @@ voxel coordinates):
 - `*_same_windings.json` — iso-winding contour collections (same-winding
   constraints)
 
-From the demo slice: **24 relative collections (783 points) + 17 same-winding
-collections (408 points)**, machine-generated in seconds.
+Historical note: the round-trip integrity check above (24 relative
+collections / 783 points + 17 / 408) was performed with the original
+ray-based exporter. The current exporter walks gradient streamlines instead
+(the ray version silently broke on non-star-convex scrolls — bug #8) and
+emits sparser, strictly monotone strings: e.g. ~40 collections / ~294 points
+per PHercParis4 station. Both formats load through the official loader.
 
 ## Run it
 
@@ -143,13 +147,13 @@ python examples/run_demo.py     # streams a PHerc 1667 slice, solves, exports
 
 The fit_spiral benchmark ran on PHercParis4 (z 8500–9500, production config,
 30k steps, scored by the fitter's own satisfaction metrics over the identical
-89,237-patch verified set). Read the failures before the successes. All figures are single runs; a
-repeat of Run A to estimate run-to-run variance is in progress and its
-spread will be added to this table:
+89,237-patch verified set). Read the failures before the successes. Run A was repeated to measure the
+run-to-run noise floor: ±0.6 points on patches (52.0 vs 52.6).
 
 | Run | Annotations | Satisfied patches | Satisfied area |
 |---|---|---|---|
 | A — manual | 2,173 human points | 52.0% | 75.9% |
+| A — repeat (noise floor) | identical inputs | 52.6% | 76.0% |
 | **A+Bf** — human + loop-vetted machine | +379 vetted machine points | **51.6%** | **75.3%** |
 | C — none | 0 | 48.5% | 71.1% |
 | B raw machine (best of 5 attempts) | 1,086 points | 44.2% | 66.7% |
@@ -179,11 +183,10 @@ across compressed regions at this scan resolution (measured slope 0.647 vs.
 manual over long spans; local correlation 0.93 — n=15 matched pairs at one
 station, so treat as indicative, not precise). A feedback loop that vets
 each machine constraint against a fitted spiral and drops the untrustworthy
-ones brings the human+machine combination to statistical parity with human
-annotations alone — on this exploration band. **No claim of improvement over
-manual annotations is made.** A pre-registered confirmatory run on a held-out
-z-band (11000–12000, untouched by any debugging decision) is in progress and
-will be reported here regardless of outcome. Getting to this table consumed
+ones brought the human+machine combination to statistical parity with human
+annotations alone — on the exploration band only. **That parity did not
+survive the pre-declared held-out replication (table above), and no claim of
+parity or improvement is made.** Getting to this table consumed
 eight root-caused bugs (thread caps, non-comparable losses, clobbered
 checkpoints, silent CG non-convergence, a resolution-envelope violation, a
 stitched-volume coordinate frame, non-star-convex ray sampling, gradient
@@ -206,11 +209,12 @@ the community's shared referee for winding generators.
 
 ### Roadmap
 
-1. Confirmatory held-out-band results (running).
-2. Close the compression gap: resolution escalation in flagged regions
+1. Score the field through constraint-gauge (community referee).
+2. Encode the field as a winding-inference store for scrolls without one.
+3. Close the compression gap: resolution escalation in flagged regions
    (2.4 µm partial scans) + fit-feedback constraint refinement.
-3. Patch auto-verification via winding-field consistency.
-4. 3D-native solve.
+4. Patch auto-verification via winding-field consistency.
+5. 3D-native solve.
 
 ## Ablations & extensions (running log)
 
