@@ -35,8 +35,9 @@ wholesale:
    monotonic **winding coordinate**: iso-contours are individual windings, and
    the difference between any two points is their relative winding number.
 
-No training data. No GPU. No manual annotation. ~60 s per slice on a laptop,
-streaming CT chunks directly from the open-data S3 bucket.
+This can be performed by streaming per-slice CT chunks directly from the
+open data without extra GPU time, training data, or manual annotation. To me
+it seems pretty lean.
 
 ## Day-one validation (PHerc 1667, mid-scroll slice, 19.2 µm)
 
