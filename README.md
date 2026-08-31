@@ -143,7 +143,9 @@ python examples/run_demo.py     # streams a PHerc 1667 slice, solves, exports
 
 The fit_spiral benchmark ran on PHercParis4 (z 8500–9500, production config,
 30k steps, scored by the fitter's own satisfaction metrics over the identical
-89,237-patch verified set). Read the failures before the successes:
+89,237-patch verified set). Read the failures before the successes. All figures are single runs; a
+repeat of Run A to estimate run-to-run variance is in progress and its
+spread will be added to this table:
 
 | Run | Annotations | Satisfied patches | Satisfied area |
 |---|---|---|---|
@@ -155,7 +157,8 @@ The fit_spiral benchmark ran on PHercParis4 (z 8500–9500, production config,
 **What this does and does not show.** Raw machine annotations as a drop-in
 replacement HURT the fit (44.2% < C's 48.5%): the field under-counts windings
 across compressed regions at this scan resolution (measured slope 0.647 vs.
-manual over long spans; local correlation 0.93). A feedback loop that vets
+manual over long spans; local correlation 0.93 — n=15 matched pairs at one
+station, so treat as indicative, not precise). A feedback loop that vets
 each machine constraint against a fitted spiral and drops the untrustworthy
 ones brings the human+machine combination to statistical parity with human
 annotations alone — on this exploration band. **No claim of improvement over
