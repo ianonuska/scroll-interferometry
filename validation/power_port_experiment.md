@@ -30,6 +30,7 @@ raw-CT physics field replace the trained model at the port that matters?
 |---|---|---|---|
 | confA (reference) | manual annotations + trained model | 54.6 / 55.1 | 77.1 |
 | confC | trained neural model | 53.6 | 76.8 |
+| confC seed 2 | trained neural model (replicate) | 53.2 | 76.6 |
 | confOurWM (v1) | our field, flawed store | 53.0 | 76.3 |
 | confOurWM2 (v2) | our field, clean store | 53.1 | 76.0 |
 
@@ -38,9 +39,12 @@ match). Run-repeat noise on this band measured ±0.5–0.6 points.
 
 ## Reading
 
-- Our field is **0.5–0.8 points below the trained model** — at the edge of
-  the noise floor, replicated across two independently built stores. We
-  claim comparable, not equal and not better.
+- With the trained model's own replicate in (53.6 / 53.2), the
+  between-family gap (~0.35 points, means 53.4 vs 53.05) is smaller than
+  the trained model's own seed-to-seed spread (0.4). Our field is
+  **statistically indistinguishable from the trained model on this band**
+  at the resolution these runs can measure. We still claim comparable, not
+  better.
 - The supervision budget difference is the point: **~3,400× fewer
   crossings** (7,929 vs 26.7M) for near-identical fit quality. The port
   works; the field's information survives the socket change.

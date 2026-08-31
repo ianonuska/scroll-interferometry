@@ -166,10 +166,10 @@ scatter-sensitive (dark-field) acquisition. Full narrative:
 store — the dense input that normally comes from a trained neural winding
 model and only exists for scrolls that have one. On the held-out band,
 swapping the trained model's store for ours (everything else identical):
-trained model 53.6 patches / 76.8 area; our field 53.0–53.1 / 76.0–76.3
-across two independently built stores — 0.5–0.8 points below, at the edge
-of the ±0.5–0.6 run-repeat noise floor, using **~3,400× fewer crossings**
-(7,929 vs 26.7M). Comparable, not better — but the same field through the
+trained model 53.6 and 53.2 patches (two seeds) / 76.8–76.6 area; our
+field 53.0–53.1 / 76.0–76.3 across two independently built stores. The
+between-family gap (~0.35 points) is smaller than the trained model's own
+seed-to-seed spread, using **~3,400× fewer crossings** (7,929 vs 26.7M). Comparable, not better — but the same field through the
 annotation port scored 50.0: the port was the bottleneck, not the field.
 Setup, store audit, and full table: `validation/power_port_experiment.md`.
 The scrolls that matter have no trained model at all; running this store on
