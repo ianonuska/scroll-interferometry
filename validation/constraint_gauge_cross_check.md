@@ -47,8 +47,32 @@ For scale: on the gauge author's own (harder, different-arm) lines,
 winding-sync solvers score M1 0.017–0.050 / M2 21–25, and his tuned
 estimators M1 0.23–0.30 / M2 2.6–3.5.
 
+## The 9.6 µm rerun and the fringe-scale finding
+
+We repeated the run at 9.6 µm expecting per-point improvement, since that
+resolution had fixed the median-level compression. It got worse: M1 0.132,
+M2 3.70. The per-pair breakdown explains why (`*_L2_pairs.csv`):
+
+| dw_true | median dw_pred @19.2 µm | median dw_pred @9.6 µm |
+|---|---|---|
+| 1 | 1.03 | 1.79 |
+| 2 | 1.81 | 3.14 |
+| 4 | 3.00 | 5.30 |
+| 6 | 4.44 | 7.82 |
+
+The instrument has a resolution-dependent fringe scale: at 19.2 µm it
+undercounts (ratio ~0.8 — blur merges dense windings; already documented as
+the "~0.8 gain"), and at 9.6 µm it overcounts (ratio ~1.3–1.4 — the two
+faces of a papyrus sheet start resolving as separate fringes). The clean
+median slope of +1.10 at 9.6 µm hid this: medians over long spans average
+regions that over- and under-count. Only a per-pair bench like this one
+exposes it. "One fringe = one winding" is resolution-conditional, and the
+band selection needs a pitch-locked cap before per-point numbers can
+improve. Any such fix will be developed on this scroll (the declared dev
+target) and validated on held-out data before claims.
+
 ## What this changes
 
-Per-point exactness at higher resolution (9.6 µm halved the median-level
-error) is now a measured, prioritized gap, and the confidence channel needs
-an accuracy-linked definition before anyone should weight by it.
+The per-point gap now has a measured mechanism (fringe scale vs.
+resolution) rather than a vague "noise" label, and the confidence channel
+needs an accuracy-linked definition before anyone should weight by it.

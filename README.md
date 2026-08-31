@@ -115,7 +115,11 @@ through the gauge's own loader; full setup and caveats in
 `validation/constraint_gauge_cross_check.md`). Per-point results at 19.2 µm:
 **M1 exact-dw1 0.190, M2 MAE 2.47 windings, coverage 0.352** — and the
 gauge's calibration check shows our exported confidence values do not
-predict per-point accuracy (flat across deciles). So: the field's medians
+predict per-point accuracy (flat across deciles). A 9.6 µm rerun scored
+*worse* per-point (M2 3.70) and exposed why: the fringe scale is
+resolution-dependent — ~0.8 windings per fringe at 19.2 µm (blur merges),
+~1.4 at 9.6 µm (sheet faces split). Details and the dw transfer table are
+in the cross-check file. So: the field's medians
 are systematically right (benchmark above), individual points sit ±2
 windings at this resolution, and the confidence channel should be read as a
 coverage flag, not a probability. Both numbers are the point: one instrument
