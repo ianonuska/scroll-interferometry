@@ -15,9 +15,9 @@ scalability by a great extent").
 ## The idea
 
 A scroll cross-section is a fringe pattern: the rolled papyrus sheet is
-quasi-periodic, **one winding = one fringe**, and *relative winding number* — the
-annotation the spiral-fitting pipeline needs and currently gets from human
-annotators — **is fringe order**. That imports the RF/SAR-interferometry toolbox
+quasi-periodic, therefore **one winding can be treated as one fringe**, and
+*relative winding number* (the annotation the spiral-fitting pipeline needs and
+currently gets from human annotators) **can be treated as fringe order**. That imports the RF/SAR-interferometry toolbox
 wholesale:
 
 1. **Structure tensor** → local sheet-normal orientation + coherence (a quality
