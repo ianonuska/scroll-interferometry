@@ -107,6 +107,21 @@ Round-trip integrity: the exported JSONs load through the official
 `spiral-fitting/point_collection.py` loader verbatim (24 collections / 783
 points relative + 17 / 408 same-winding). The full spiral fitter requires a CUDA host; benchmark results below.
 
+## Cross-check on the community constraint-gauge
+
+We also scored the z=2317 field on pscamillo's constraint-gauge bench
+(scorer unmodified, ground truth = the 19 accepted single-winding segments
+through the gauge's own loader; full setup and caveats in
+`validation/constraint_gauge_cross_check.md`). Per-point results at 19.2 µm:
+**M1 exact-dw1 0.190, M2 MAE 2.47 windings, coverage 0.352** — and the
+gauge's calibration check shows our exported confidence values do not
+predict per-point accuracy (flat across deciles). So: the field's medians
+are systematically right (benchmark above), individual points sit ±2
+windings at this resolution, and the confidence channel should be read as a
+coverage flag, not a probability. Both numbers are the point: one instrument
+measures the trend, the other measures per-point exactness, and honest use
+of this tool needs both.
+
 ## Output: spiral-fitting constraint files (format-verified)
 
 `winding_to_vc.py` exports the field as `vc_pointcollections_json_version: 1`
