@@ -57,3 +57,21 @@ framing. Analysis code will be MIT, one-command, CPU-only. AI-assisted
 implementation (Claude), disclosed. Prior art checked: dual-energy
 absorption subtraction (PaulG) = different channel, null; no community
 proposal of scatter/texture-statistics ink detection found as of this date.
+
+## Amendment 1 (2026-08-31, before any real-fragment analysis)
+
+Declared after inspecting the public directory layouts and BEFORE running
+the analysis on any fragment. Data-availability accommodations only; no
+statistic, threshold, or criterion changes:
+
+- Frag4 ships no aligned ir.png. Its aligned inklabels.png (derived from
+  the IR photograph by the data providers) is the ink mask for Frag4 only.
+  All other fragments use the declared Otsu threshold on ir.png.
+- Frag5 is scanned at 70 keV / 3.24 um and Frag6 at multiple energies; we
+  use Frag6's 53 keV / 3.24 um series (closest to the scrolls' 54 keV).
+  Per-fragment scan differences were already handled by the declared
+  no-pooling rule.
+- "Middle surface-volume layer +-2" is computed from each fragment's actual
+  layer count (middle = n//2), not assumed to be layer 32 of 65.
+- File layouts differ per fragment; the exact staged paths are recorded in
+  the staging script committed alongside this amendment.
