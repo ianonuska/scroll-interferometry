@@ -261,6 +261,24 @@ now done: constraint-gauge results are in the cross-check section above
 
 ### Roadmap
 
+**Next instrument upgrade — rotating-frame processing (planned, not yet
+built).** The scroll is a linear chirp in the rotating frame: in polar
+coordinates around the umbilicus a spiral wrap is a tilted stripe, so
+de-chirping (shearing by the local pitch, the radar pulse-compression move)
+should collapse windings toward separable flat lines. This attacks both
+measured weaknesses at once: the resolution-dependent fringe scale (dense
+zones become separable at the same scan resolution) and the field's
+achirality (the stripe-tilt sign is the winding sense, which the onion-form
+coordinate provably cannot see). Success criterion, declared in advance:
+a de-chirped 9.6 µm solve must beat the static 9.6 µm gauge numbers
+(M1 0.132 / M2 3.70) on the identical GT and adapter protocol, developed on
+PHerc 1667 (the dev scroll) only. Known risks, stated up front: local-pitch
+estimation is circular if done carelessly; polar resampling degrades near
+the core. A second, independent module: axis-following reslicing (slices
+perpendicular to the local umbilicus tangent instead of fixed z-planes),
+A/B-testable the same way.
+
+
 1. Score the field through constraint-gauge (community referee).
 2. Encode the field as a winding-inference store for scrolls without one.
 3. Close the compression gap: resolution escalation in flagged regions
