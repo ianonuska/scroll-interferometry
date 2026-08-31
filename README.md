@@ -213,9 +213,9 @@ Ours is a single-band, single-seed corroboration, not a first. pscamillo also re
 generators degrading fits vs. a no-constraint baseline with root causes in
 lasagna materialization resolution; our generator reads raw CT rather than
 lasagna fields, so our B-run failures have distinct mechanics (documented
-above), but the phenomenon has precedent. Next validation step before any
-further claim: scoring this generator through pscamillo's constraint-gauge,
-the community's shared benchmark for winding generators.
+above), but the phenomenon has precedent. That promised validation step is
+now done: constraint-gauge results are in the cross-check section above
+(M1 0.190 / M2 2.47 at 19.2 µm, confidence channel uninformative).
 
 ### Roadmap
 
