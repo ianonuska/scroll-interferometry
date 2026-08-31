@@ -240,23 +240,24 @@ study above; this is a scan-character smoke test, not a count claim).
 
 ![four-volume scout](figures/letters_scout_4vol.png)
 
-## How this differs from neighboring tools — stated plainly
+## How this differs from neighboring tools
 
-Several community tools sound similar. The differences, one line each:
+Several community tools have some similarities but also key differences.
 
 | Tool | What it does | What ours does differently |
 |---|---|---|
-| **winding-sync** (Balmaceda) | Integer winding labels from structure-tensor orientation, solved discretely | Ours also measures winding **spacing** (a frequency channel), and solves one continuous convex system — a dense coordinate at every voxel, not labels on patches |
-| **winding-ruler / constraint-gauge** (pscamillo) | Measures winding pitch along rays; scores any generator against human GT | A ruler and a referee — not a field. We are a **generator**, and we will be scored by their referee |
-| **Prior constraint generators** (three, per pscamillo) | Generated constraints from **lasagna fields** (ML predictions); all three degraded fits; root cause = lasagna resolution | Ours reads **raw CT** — no ML predictions anywhere upstream, so lasagna's resolution ceiling does not bind us. Our failures had different causes (documented above) |
-| **scroll-truth** (karasukun) | Answers "same wrap or not?" for a PAIR of patches, from raw CT | Same philosophy (raw CT, judge models with model-free references) — but pairwise verdicts, not a global coordinate. Complementary: our field assigns the wrap number both patches share |
+| **winding-sync** (Balmaceda) | Integer winding labels from structure-tensor orientation, solved discretely | Ours also measures winding **spacing** (a frequency channel), and solves one continuous convex system, a dense coordinate at every voxel, not labels on patches |
+| **winding-ruler / constraint-gauge** (pscamillo) | Measures winding pitch along rays; scores any generator against human GT | This sets a good standard to verify against. We are a **generator**, and we will be scored by their benchmark |
+| **Prior constraint generators** (three, per pscamillo) | Generated constraints from **lasagna fields** (ML predictions); all three degraded fits; root cause = lasagna resolution | Ours reads **raw CT** so it has no ML predictions anywhere upstream, so lasagna's resolution ceiling does not bind us. Our failures had different causes (documented above) |
+| **scroll-truth** (karasukun) | Answers "same wrap or not?" for a pair of patches, from raw CT | Same philosophy (raw CT, judge models with model-free references) but provides pairwise verdicts, not a global coordinate. So this is complementary as our field assigns the wrap number both patches share |
 | **ScrollAnchor** (olgaiv39) | Per-vertex drift/sheet-switch diagnostics for an existing tifxyz surface | Diagnoses surfaces after they exist; our field exists **before** any surface and can position disconnected pieces globally |
 | **ScrollFiesta** (Kyles) / **scrollreading** (Stevens) | Build and assemble surface meshes from ML predictions | Sheet **builders**. Ours is a **map**: the global winding address their assembled pieces need for placement |
 
-Summary: the other tools label, build, check, or score pieces. This one
-measures a continuous winding coordinate for every voxel directly from raw
-CT. Whether that map is accurate enough to matter is an empirical question,
-scored above and next against constraint-gauge.
+One sentence for all of it: **everyone else labels, builds, checks, or scores
+pieces; ours is the only tool that measures a continuous winding coordinate
+for every voxel directly from the raw physics.** Whether that map is accurate
+enough to matter is an empirical question — scored above, and next against
+constraint-gauge.
 
 ## Relation to existing community work
 
