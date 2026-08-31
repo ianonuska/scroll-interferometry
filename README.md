@@ -2,7 +2,7 @@
 
 A winding meter for Herculaneum scrolls: automated relative winding
 annotations, made by treating the CT cross-section as an interferogram.
-It measures a winding coordinate at each pixel. It is a measuring
+It measures a winding coordinate at each pixel, operating as a measuring
 instrument, not a fitter. Its output loads into the community's spiral
 fitter as annotations.
 
@@ -200,7 +200,7 @@ lasagna materialization resolution; our generator reads raw CT rather than
 lasagna fields, so our B-run failures have distinct mechanics (documented
 above), but the phenomenon has precedent. Next validation step before any
 further claim: scoring this generator through pscamillo's constraint-gauge,
-the community's shared referee for winding generators.
+the community's shared benchmark for winding generators.
 
 ### Roadmap
 
@@ -253,8 +253,8 @@ Several community tools have some similarities but also key differences.
 | **ScrollAnchor** (olgaiv39) | Per-vertex drift/sheet-switch diagnostics for an existing tifxyz surface | Diagnoses surfaces after they exist; our field exists **before** any surface and can position disconnected pieces globally |
 | **ScrollFiesta** (Kyles) / **scrollreading** (Stevens) | Build and assemble surface meshes from ML predictions | Sheet **builders**. Ours is a **map**: the global winding address their assembled pieces need for placement |
 
-One sentence for all of it: **everyone else labels, builds, checks, or scores
-pieces; ours is the only tool that measures a continuous winding coordinate
+Summary: **everyone else seems to either label, build, check, or score
+pieces; whereas our tool measures a continuous winding coordinate
 for every voxel directly from the raw physics.** Whether that map is accurate
 enough to matter is an empirical question — scored above, and next against
 constraint-gauge.
@@ -285,4 +285,4 @@ has tried a frequency-domain framing before.
 
 Scan data: [Vesuvius Challenge open data](https://scrollprize.org/data)
 (`s3://vesuvius-challenge-open-data/`, CC BY-NC 4.0) — streamed, never bulk
-downloaded. Code: MIT. Built by Ian Onuska (ONUSKA Industries) with Claude.
+downloaded. Code: MIT. Built by Ian Onuska.
