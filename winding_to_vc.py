@@ -95,6 +95,20 @@ def collect_pearl_streams(W, quality, q_thresh=0.05, n_seeds=96):
                 if not (0 <= xi < nx and 0 <= yi < ny):
                     break
                 if not mask[yi, xi]:
+                    # coast geometrically so downstream windings stay
+                    # reachable, but never assert a delta ACROSS the hole:
+                    # the winding change over unmeasured papyrus is unknown,
+                    # and stamping it at the resume point fabricates
+                    # constraints (bug #9: post-coast range emission put
+                    # every skipped integer at one location and overwrote
+                    # good pearls via the stream dict). The split is
+                    # unconditional: an empty first segment must still split,
+                    # or the seed-joint merge stitches post-hole pearls to
+                    # the opposite walk's pre-hole pearls.
+                    if holes == 0:
+                        w_prev = None
+                        segs.append([])
+                        out = segs[-1]
                     holes += 1
                     if holes > hole_limit:
                         break
@@ -121,7 +135,11 @@ def collect_pearl_streams(W, quality, q_thresh=0.05, n_seeds=96):
                 last_dx, last_dy = dx_, dy_
                 x += sgn * step * dx_
                 y += sgn * step * dy_
-            return [s for s in segs if s]
+            # keep empty segments: segs[0] must stay the seed-adjacent
+            # segment for the joint merge below, even when it is empty
+            # (a walk that hits a hole before its first pearl). Empties are
+            # dropped at group assembly.
+            return segs
 
         for p_i in picks:
             x0_, y0_ = float(gx2[p_i]), float(gy2[p_i])
@@ -138,7 +156,8 @@ def collect_pearl_streams(W, quality, q_thresh=0.05, n_seeds=96):
                     joint[m] = (x, y)
             groups = [joint] if joint else []
             for seg in bwd_segs[1:] + fwd_segs[1:]:
-                groups.append({m: (x, y) for m, x, y in seg})
+                if seg:
+                    groups.append({m: (x, y) for m, x, y in seg})
             for g in groups:
                 if len(g) >= 2:
                     streams.append(g)

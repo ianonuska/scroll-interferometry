@@ -62,9 +62,17 @@ def chord_split(points, levels, chord_tol):
     n = len(points)
     i = 0
     while i < n - 1:
+        # unit-step guard: consecutive crossings must differ by exactly one
+        # winding. Anything else means the stream skipped fringes (a hole,
+        # a resolution break) and no delta may be asserted across it.
+        if abs(int(levels[i + 1]) - int(levels[i])) != 1:
+            i += 1
+            continue
         j = i + 1
         best = j
         while j + 1 <= n - 1:
+            if abs(int(levels[j + 1]) - int(levels[j])) != 1:
+                break
             j += 1
             a, b = points[i], points[j]
             d = b - a
