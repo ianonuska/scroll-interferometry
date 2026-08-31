@@ -137,6 +137,29 @@ voxel coordinates):
 - `*_same_windings.json` — iso-winding contour collections (same-winding
   constraints)
 
+## The listening pilot: a texture fingerprint for ink
+
+Carbon ink is nearly invisible in absorption CT (its density matches
+papyrus). We preregistered a test of whether it leaves a *texture*
+fingerprint anyway, on the six public fragments with infrared ground truth
+(`preregistrations/2026-08-31_listening_pilot.md`, criteria committed
+before any data was touched).
+
+![listening method](figures/fig_listening_method.png)
+
+Result: on 4 of 6 fragments, ink regions show more variance, more
+short-range correlation, and less high-frequency power — significant after
+Bonferroni correction, and robust to brightness-matched controls on the
+two fragments where that check has power. Two fragments are honest nulls.
+One declared analysis choice (the Otsu IR mask) failed on real data and is
+disclosed in full, with a labeled sensitivity rerun. Effect sizes are small
+(Cliff's delta ~0.15–0.25): this is not an ink detector, it is an
+independent corroboration channel — and the empirical case for
+scatter-sensitive (dark-field) acquisition. Full narrative:
+`analysis/listening_pilot_results.md`.
+
+![listening results](figures/fig_listening_results.png)
+
 ## The power-port experiment: our field as the winding model
 
 `winding_to_store.py` encodes the field as the fitter's `winding_inference`

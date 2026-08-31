@@ -5,6 +5,8 @@ Question (preregistered before any data was touched —
 1 committed before analysis): does carbon ink leave a measurable texture
 fingerprint in standard absorption CT, where it has ~no density contrast?
 
+![method](../figures/fig_listening_method.png)
+
 ## The short answer
 
 Yes, on 4 of 6 fragments, with modest effect sizes — and the result
@@ -37,6 +39,8 @@ choice (the Otsu ink mask) failed on real data and is fully disclosed below.
    effects die, consistently. Frag1/Frag3 could not be confound-tested
    under the preregistered masks (79/33 controls); re-testing them under
    inklabels masks is open work.
+
+![results](../figures/fig_listening_results.png)
 
 ## Reading
 
