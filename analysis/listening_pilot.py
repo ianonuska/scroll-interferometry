@@ -43,6 +43,7 @@ from scipy import stats
 
 LAYERS = ["30.tif", "31.tif", "32.tif", "33.tif", "34.tif"]
 PATCH = 64
+MASK_SOURCE = "ir"  # "ir" = preregistered Otsu-on-IR; "inklabels" = post-hoc sensitivity
 ALPHA = 0.01
 N_TESTS = 24  # 4 statistics x 6 fragments, declared in the prereg
 
@@ -93,17 +94,34 @@ def cliffs_delta(a, b):
 def analyze_fragment(fragdir, writer=None):
     import tifffile
     from PIL import Image
+    Image.MAX_IMAGE_PIXELS = None   # fragment IR photos exceed PIL's default
     name = os.path.basename(fragdir.rstrip("/"))
     stack = np.stack([
         tifffile.imread(os.path.join(fragdir, f)).astype(np.float64)
         for f in LAYERS])
-    ir = np.asarray(Image.open(os.path.join(fragdir, "ir.png")).convert("L"),
-                    dtype=np.float64)
     fmask = np.asarray(Image.open(os.path.join(fragdir, "mask.png")).convert("L")) > 127
-    if ir.shape != stack.shape[1:]:
-        raise SystemExit(f"{name}: ir.png {ir.shape} != volume {stack.shape[1:]}")
-    thr = otsu(ir[fmask])
-    ink = (ir < thr) & fmask
+    ir_path = os.path.join(fragdir, "ir.png")
+    if MASK_SOURCE == "inklabels":
+        # POST-HOC SENSITIVITY MODE (not the preregistered analysis): the
+        # declared Otsu-on-IR mask failed on several fragments (ink
+        # fractions up to 0.95 — it thresholds illumination, not ink).
+        # This mode uses the provider-aligned inklabels for every fragment.
+        ink = np.asarray(Image.open(os.path.join(fragdir, "inklabels.png"))
+                         .convert("L")) > 127
+        ink &= fmask
+    elif os.path.exists(ir_path):
+        ir = np.asarray(Image.open(ir_path).convert("L"), dtype=np.float64)
+        if ir.shape != stack.shape[1:]:
+            raise SystemExit(f"{name}: ir.png {ir.shape} != volume {stack.shape[1:]}")
+        thr = otsu(ir[fmask])
+        ink = (ir < thr) & fmask
+    else:
+        # Amendment 1: Frag4 ships no aligned ir.png; its provider-derived
+        # aligned inklabels.png is the ink mask for that fragment only.
+        ink = np.asarray(Image.open(os.path.join(fragdir, "inklabels.png"))
+                         .convert("L")) > 127
+        ink &= fmask
+        print(f"{name}: no ir.png — using inklabels.png per amendment 1")
     edge_dist = ndi.distance_transform_edt(fmask)
 
     ny, nx = fmask.shape
@@ -222,7 +240,9 @@ if __name__ == "__main__":
     ap.add_argument("fragdirs", nargs="*")
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--csv", default="listening_pilot_results.csv")
+    ap.add_argument("--mask-source", choices=["ir", "inklabels"], default="ir")
     a = ap.parse_args()
+    MASK_SOURCE = a.mask_source
     if a.selftest:
         selftest()
         sys.exit(0)
