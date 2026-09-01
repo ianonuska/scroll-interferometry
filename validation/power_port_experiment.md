@@ -54,5 +54,7 @@ match). Run-repeat noise on this band measured ±0.5–0.6 points.
 - The trained model exists only for this scroll. The 11 quiet Grand-Prize
   scrolls have neither annotations nor a model — there, this store is not
   an alternative but the only dense winding source on offer. That
-  benchmark (quiet scroll, C-baseline vs our store) is the next
-  experiment.
+  benchmark has now been run on PHerc 0257: see `quiet_scroll_0257.md`.
+  Short version — the store hurt at 37 µm, was net-neutral at 19 µm, and
+  the mechanism (field-vs-fit slope 0.33 → 0.70) was measured and predicted
+  in advance.

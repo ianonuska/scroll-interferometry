@@ -12,6 +12,40 @@ scalability by a great extent").
 
 ![showcase](figures/winding_showcase.png)
 
+## Measured so far (all August 2026, all on public data, negatives included)
+
+- **The instrument holds up against the accepted unwrap of the one read
+  scroll.** On PHerc 1667 our winding coordinate tracks the released
+  per-winding segments across five slices; restricted to the single-winding
+  segments the slope reaches +1.02 at 19.2 µm and +1.10 at 9.6 µm. The
+  exclusion is documented, both numbers are published, and it is one
+  scroll. → *Ground-truth benchmark*, below.
+- **On the community's own per-point bench it lands in the range of the
+  bench author's estimators — and exposes its own weakness.** Constraint-gauge
+  (scorer unmodified): M1 0.190, M2 2.47 windings at 19.2 µm; our exported
+  confidence turns out to be uninformative, and the fringe scale is
+  resolution-dependent (≈0.8 windings per fringe at 19.2 µm, ≈1.4 at
+  9.6 µm). → *Cross-check on the community constraint-gauge*.
+- **Plugged into the fitter's dense winding-model input, the field matches
+  the trained neural model within noise** on the held-out Paris 4 band
+  (53.0–53.1 vs 53.6/53.2 patches) with ~3,400× fewer crossings. The same
+  field fed through the annotation port scored 50.0: the port was the
+  bottleneck. → *The power-port experiment*.
+- **On a scroll with no annotations and no trained model (PHerc 0257) it
+  does not yet help.** The store hurt the fit at 37 µm (−2.1 points) and
+  recovered to net-neutral at 19 µm; the mechanism was measured (field-vs-fit
+  slope 0.33 → 0.70) and predicted in advance. Honest status: an independent
+  ordering check for the scroll, not yet a surface improvement.
+  → `validation/quiet_scroll_0257.md`.
+- **A preregistered ink-texture pilot finds a weak fingerprint on 4 of 6
+  fragments** (Cliff's delta ≈0.2), surviving brightness-matched controls
+  where that check has power, with two honest nulls and a declared mask
+  method that failed and is disclosed. Not a detector; an independent
+  corroboration channel. → *The listening pilot*.
+- **What failed:** the claim that our annotations reach parity with human
+  ones did not survive its pre-declared held-out replication, and getting
+  here took nine root-caused bugs. Both are written up below.
+
 ## The idea
 
 A scroll cross-section is a fringe pattern: the rolled papyrus sheet is
@@ -173,7 +207,9 @@ seed-to-seed spread, using **~3,400× fewer crossings** (7,929 vs 26.7M). Compar
 annotation port scored 50.0: the port was the bottleneck, not the field.
 Setup, store audit, and full table: `validation/power_port_experiment.md`.
 The scrolls that matter have no trained model at all; running this store on
-one of them is the next experiment.
+the first such run, on PHerc 0257, is written up in
+`validation/quiet_scroll_0257.md` — a negative result with its mechanism
+measured.
 
 Historical note: the round-trip integrity check above (24 relative
 collections / 783 points + 17 / 408) was performed with the original
@@ -240,10 +276,11 @@ each machine constraint against a fitted spiral and drops the untrustworthy
 ones brought the human+machine combination to statistical parity with human
 annotations alone, on the exploration band only. That parity did not survive
 the pre-declared held-out replication (table above). No claim of parity or
-improvement is made. Getting to this table took eight root-caused bugs (thread caps,
+improvement is made. Getting to this table took nine root-caused bugs (thread caps,
 non-comparable losses, clobbered checkpoints, silent CG non-convergence, a
 resolution-envelope violation, a stitched-volume coordinate frame,
-non-star-convex ray sampling, gradient vortices at damage holes). Each fix is
+non-star-convex ray sampling, gradient vortices at damage holes, and an
+exporter that fabricated winding deltas across damage holes). Each fix is
 in this repo's history with its diagnosis in the commit message.
 
 Also measured along the way: under the current production config, the manual
