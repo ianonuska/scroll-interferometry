@@ -42,6 +42,23 @@ choice (the Otsu ink mask) failed on real data and is fully disclosed below.
 
 ![results](../figures/fig_listening_results.png)
 
+## Direction confound — tested 2026-09-01, closed
+
+A hole in the analysis above: the S3 statistic averaged the x and y
+autocorrelations, so a reconstruction artifact aligned with the sampling
+grid was indistinguishable from real microstructure. The criterion was
+declared before running (`listening_anisotropy.py` header): a signal
+confined to one grid axis with near-zero diagonals is grid-locked and would
+weaken the claim. Result (`listening_anisotropy_results.txt`, provider
+masks): on Frag1, Frag3 and Frag6 the ink-vs-control shift appears on both
+grid axes AND both diagonals at similar magnitude (diagonal deltas
+0.18–0.25) — isotropic, as real microstructure should be and as a grid
+artifact cannot be. Frag2's signal is in variance rather than correlation;
+Frag4 stays null; Frag5 stays weakly reversed. No fragment is grid-locked.
+Caveat carried: surface volumes are resampled along the surface normal, so
+isotropy in this frame is evidence against a grid artifact, not proof of
+physics.
+
 ## Reading
 
 The signature — MORE variance, MORE short-range correlation, LESS

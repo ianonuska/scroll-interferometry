@@ -1,0 +1,7 @@
+Frag1: n_ink=1055 n_ctl=1055 | x-lag d=+0.114(p=5.9e-06) y-lag d=+0.220(p=2.2e-18) diag+ d=+0.203(p=7.3e-16) diag- d=+0.250(p=3.1e-23) | axis-ratio 1.93 diag-mean 0.226 -> not grid-locked
+Frag2: n_ink=3273 n_ctl=3273 | x-lag d=+0.016(p=2.7e-01) y-lag d=-0.019(p=1.9e-01) diag+ d=-0.009(p=5.1e-01) diag- d=-0.000(p=9.8e-01) | axis-ratio 1.20 diag-mean 0.005 -> not grid-locked
+Frag3: n_ink=579 n_ctl=579 | x-lag d=+0.117(p=5.8e-04) y-lag d=+0.191(p=2.0e-08) diag+ d=+0.174(p=2.9e-07) diag- d=+0.188(p=3.1e-08) | axis-ratio 1.63 diag-mean 0.181 -> not grid-locked
+Frag4: n_ink=830 n_ctl=830 | x-lag d=+0.067(p=1.8e-02) y-lag d=+0.023(p=4.1e-01) diag+ d=+0.061(p=3.1e-02) diag- d=+0.040(p=1.6e-01) | axis-ratio 2.87 diag-mean 0.051 -> not grid-locked
+Frag5: n_ink=369 n_ctl=369 | x-lag d=-0.048(p=2.6e-01) y-lag d=-0.135(p=1.5e-03) diag+ d=-0.129(p=2.4e-03) diag- d=-0.102(p=1.7e-02) | axis-ratio 2.83 diag-mean 0.116 -> not grid-locked
+Frag6: n_ink=851 n_ctl=851 | x-lag d=+0.313(p=5.8e-29) y-lag d=+0.140(p=5.5e-07) diag+ d=+0.250(p=3.8e-19) diag- d=+0.212(p=4.2e-14) | axis-ratio 2.23 diag-mean 0.231 -> not grid-locked
+VERDICT: no fragment shows a grid-locked signal; direction confound not supported
