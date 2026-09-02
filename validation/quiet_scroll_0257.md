@@ -88,13 +88,16 @@ flagged, and flagged tracks are *straighter* than unflagged ones by the
 track store's own tortuosity metric (1.08 vs 1.18): a length confound, not a
 defect detector (`quiet_scroll_0257_track_flags.json`). Not built.
 
-**A warm-start experiment, inconclusive and not to be quoted.** Letting our
-store shape the first 3,000 steps and then handing over to the pure baseline
-for 27,000 more scored 53.6 % against the baseline's 57.9 %. But the resume
-began at step 3,000 of a 30,000-step learning-rate schedule, so the control
-and the experiment differed in two ways, not one. The number means nothing
-until a proper control (baseline for 3,000, then resume) is run; it is
-reported here only so that it cannot later be mistaken for a clean result.
+**A warm-start experiment, resolved by its control (2026-09-01).** Letting
+our store shape the first 3,000 steps and then handing over to the pure
+baseline for 27,000 more scored 53.6 % against the baseline's 57.9 %. The
+control — baseline for 3,000 steps, then the identical resume — scored
+**53.6 % as well** (0.5359 vs 0.5362). The entire 4.3-point drop is the
+resume mechanics (learning-rate schedule and optimizer state), not the
+store-shaped start. So the warm-start question is *unmeasured*, not
+negative: a fair test needs a single uninterrupted run whose store weight is
+switched off mid-run, which the fitter's run-mutable weights appear to
+allow. Both numbers are kept so neither can be mistaken for a result.
 
 ## Provenance notes
 
