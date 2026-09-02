@@ -52,3 +52,19 @@ rotating-frame roadmap item: the de-chirp must be done in the **field's
 frame** (resampling along iso-W contours) rather than in polar coordinates,
 and its job at fine resolution is harmonic suppression (one fringe per
 period), not extra resolution.
+
+## Pitch lock, first iteration (2026-09-01)
+
+`winding_phase.py` gained an optional pitch lock: given a prior wavenumber
+per pixel (here the coarse 19.2 µm field's wavenumber, upsampled), the
+quadrature band selection prefers the band within a log tolerance of the
+prior instead of the strongest band. Default path is regression-verified
+bit-identical. Result at 9.6 µm (`fringe_scale_by_wrap_L2_locked.json`):
+median field/true **0.72 → 0.78**, span 59.3 → 55.8 (fewer spurious
+fringes); inner accepted wraps improve most (w28→w29 0.83 → 0.95, w30→w31
+0.86 → 0.98); the outer band barely moves. Diagnosis: the lock fixes the
+frequency channel, but face-splitting also enters through the
+ridge-adjacency constraints, which assert +2π between adjacent ridges
+regardless of the locked frequency — each sheet face is a ridge. A
+prior-gated minimum ridge spacing (`ridge_min_frac`) is the second declared
+change; result below once measured.
