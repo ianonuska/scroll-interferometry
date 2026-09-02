@@ -70,7 +70,8 @@ def _band_frequency(img_f: np.ndarray, theta: np.ndarray, s1: float, s2: float):
 
 
 def local_frequency(img: np.ndarray, theta: np.ndarray,
-                    bands=((0.8, 3.0), (1.6, 6.0), (3.2, 12.0), (6.0, 24.0))):
+                    bands=((0.8, 3.0), (1.6, 6.0), (3.2, 12.0), (6.0, 24.0)),
+                    k_prior: np.ndarray | None = None, lock_tol: float = 0.6):
     """Multi-band steered-quadrature frequency: per pixel, take the frequency of
     the band with the strongest local fringe amplitude (then median-denoise).
     A single wide band biases k low in densely packed zones; the dominant-band
@@ -84,7 +85,23 @@ def local_frequency(img: np.ndarray, theta: np.ndarray,
         amps.append(ndi.gaussian_filter(a_b, 2.0))
     K = np.stack(ks)
     A = np.stack(amps)
-    sel = np.argmax(A, axis=0)
+    if k_prior is None:
+        sel = np.argmax(A, axis=0)
+    else:
+        # Pitch lock (field-frame harmonic suppression). At fine resolution the
+        # two faces of one sheet resolve as separate fringes and the strongest
+        # band sits at twice the true winding frequency (measured: 1.39
+        # fringes/winding at 9.6 um, validation/fringe_scale). Given a prior
+        # wavenumber per pixel (e.g. from a coarser solve), prefer the band
+        # whose frequency is within `lock_tol` (log units) of the prior,
+        # scored by amplitude; fall back to plain argmax where no band is.
+        with np.errstate(divide="ignore", invalid="ignore"):
+            dist = np.abs(np.log(K) - np.log(k_prior)[None])
+        ok = np.isfinite(dist) & (dist < lock_tol)
+        score = np.where(ok, A / (1.0 + dist), -1.0)
+        sel_lock = np.argmax(score, axis=0)
+        sel_amp = np.argmax(A, axis=0)
+        sel = np.where(ok.any(axis=0), sel_lock, sel_amp)
     iy, ix = np.mgrid[0:img.shape[0], 0:img.shape[1]]
     kmag = K[sel, iy, ix]
     amp = A[sel, iy, ix]
@@ -273,9 +290,12 @@ def ridge_pairs(img: np.ndarray, theta_out: tuple, amp: np.ndarray, mask: np.nda
 # ---------------------------------------------------------------------- pipeline
 def winding_coordinate(img: np.ndarray, mask: np.ndarray, core: tuple[float, float],
                        kmin: float = 2 * np.pi / 60, kmax: float = 2 * np.pi / 3,
-                       bands=None, ridge_max_gap: int = 45):
+                       bands=None, ridge_max_gap: int = 45,
+                       k_prior: np.ndarray | None = None, lock_tol: float = 0.6):
     theta, coh = structure_tensor(img)
-    kmag, amp = (local_frequency(img, theta, bands=bands) if bands else local_frequency(img, theta))
+    kw = {"k_prior": k_prior, "lock_tol": lock_tol}
+    kmag, amp = (local_frequency(img, theta, bands=bands, **kw) if bands
+                 else local_frequency(img, theta, **kw))
     kmag = np.clip(kmag, kmin, kmax)
     # sign: orient the normal outward from the core
     ny, nx = img.shape
