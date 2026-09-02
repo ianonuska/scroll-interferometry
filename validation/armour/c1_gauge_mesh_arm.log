@@ -1,0 +1,33 @@
+=== L2_locked2 vs points arm (rc 0)
+  single-plane adapter at z=18536: A9 slab keeps 3679 of 925175 gt points (1 collections)
+gt: 3679 points, 200002 pairs; tau A2.2 on 2914/3679 points, range 10.5-46.7 vox (median fallback 46.7)
+  density gate (A10): node gap 36.0 vox, sheet gap 93.4 vox, ratio 0.39 -> SCORABLE
+  [tau/2] scorable 16735 (M4 0.084)  M1 0.190  M2 2.444
+  [tau  ] scorable 70718 (M4 0.354)  M1 0.200  M2 2.366
+  wrote /Users/ianonuska/projects/vesuvius/local1667/c1_L2_locked2_points_pairs.csv, /Users/ianonuska/projects/vesuvius/local1667/c1_L2_locked2_points_summary.json
+  [2tau ] scorable 96067 (M4 0.480)  M1 0.188  M2 2.389
+=== L2_locked2 vs meshes arm (rc 0)
+  single-plane adapter at z=18536: A9 slab keeps 522 of 142997 gt points (3 collections)
+gt: 522 points, 27678 pairs; tau A2.2 on 522/522 points, range 29.0-46.7 vox (median fallback 46.7)
+  density gate (A10): node gap 36.0 vox, sheet gap 93.4 vox, ratio 0.39 -> SCORABLE
+  [tau/2] scorable  2967 (M4 0.107)  M1 0.116  M2 2.965
+  [tau  ] scorable 11348 (M4 0.410)  M1 0.111  M2 2.985
+  wrote /Users/ianonuska/projects/vesuvius/local1667/c1_L2_locked2_meshes_pairs.csv, /Users/ianonuska/projects/vesuvius/local1667/c1_L2_locked2_meshes_summary.json
+  [2tau ] scorable 24900 (M4 0.900)  M1 0.093  M2 3.331
+=== L2 vs points arm (rc 0)
+  single-plane adapter at z=18536: A9 slab keeps 3679 of 925175 gt points (1 collections)
+gt: 3679 points, 200002 pairs; tau A2.2 on 2914/3679 points, range 10.5-46.7 vox (median fallback 46.7)
+  density gate (A10): node gap 36.0 vox, sheet gap 93.4 vox, ratio 0.39 -> SCORABLE
+  [tau/2] scorable 16735 (M4 0.084)  M1 0.120  M2 3.820
+  [tau  ] scorable 70718 (M4 0.354)  M1 0.132  M2 3.699
+  wrote /Users/ianonuska/projects/vesuvius/local1667/c1_L2_points_pairs.csv, /Users/ianonuska/projects/vesuvius/local1667/c1_L2_points_summary.json
+  [2tau ] scorable 96067 (M4 0.480)  M1 0.124  M2 3.695
+=== L2 vs meshes arm (rc 0)
+  single-plane adapter at z=18536: A9 slab keeps 522 of 142997 gt points (3 collections)
+gt: 522 points, 27678 pairs; tau A2.2 on 522/522 points, range 29.0-46.7 vox (median fallback 46.7)
+  density gate (A10): node gap 36.0 vox, sheet gap 93.4 vox, ratio 0.39 -> SCORABLE
+  [tau/2] scorable  2967 (M4 0.107)  M1 0.074  M2 4.045
+  [tau  ] scorable 11348 (M4 0.410)  M1 0.078  M2 3.996
+  wrote /Users/ianonuska/projects/vesuvius/local1667/c1_L2_meshes_pairs.csv, /Users/ianonuska/projects/vesuvius/local1667/c1_L2_meshes_summary.json
+  [2tau ] scorable 24900 (M4 0.900)  M1 0.068  M2 4.425
+C1 DONE
