@@ -12,7 +12,7 @@ scalability by a great extent").
 
 ![showcase](figures/winding_showcase.png)
 
-## Measured so far (all August 2026, all on public data, negatives included)
+## Measured so far (August – 2 September 2026, all on public data, negatives included)
 
 - **The instrument holds up against the accepted unwrap of the one read
   scroll.** On PHerc 1667 our winding coordinate tracks the released
@@ -25,10 +25,47 @@ scalability by a great extent").
   (scorer unmodified): M1 0.190, M2 2.47 windings at 19.2 µm; our exported
   confidence turns out to be uninformative, and the fringe scale is
   resolution-dependent (≈0.8 windings per fringe at 19.2 µm, ≈1.4 at
-  9.6 µm) — corroborated independently per wrap, and then *fixed*: a pitch
-  lock plus face gate lifts the 9.6 µm score to M1 0.200 / M2 2.37, passing
-  the bar declared in advance. → *Cross-check on the community
-  constraint-gauge*, `validation/fringe_scale/`.
+  9.6 µm) — corroborated independently per wrap, and then *partly fixed*: a
+  pitch lock plus face gate lifts the 9.6 µm score to M1 0.200 / M2 2.37,
+  passing the bar declared in advance. The defect and the correction
+  reproduce at **seven stations on two scrolls**, including PHerc 172 at
+  7.91 µm, the resolution of every 2027-eligible scroll (static 1.26–1.62
+  windings per true winding, locked 0.89–1.20). → `validation/fringe_scale/`,
+  `validation/armour/`.
+- **The four fringe bands already contain the right pitch for 74–78 % of
+  points; every per-pixel rule we have keeps it for 29–45 %.** Measured
+  against accepted wraps on both scrolls. The pitch lock closes 17 % of that
+  gap; a spatial-consistency assignment closed none (41 % held-out); face
+  pairing from local image evidence is at chance; so are cepstral,
+  zero-crossing and model-order period estimators. The loudest periodicity
+  at 8–10 µm *is* the face-to-face spacing. → `analysis/jointband/`,
+  `analysis/facepair/`, `analysis/spectral/`.
+- **The "verifier" claim did not survive external labels.** Preregistered
+  test against another person's eye-judged PHerc 0800 meshes: AUC 0.57
+  against a 0.75 bar (14 accepted vs 5 rejected). The field is more than
+  half a winding off on most points of every mesh — the scale bias — so it
+  cannot yet grade anyone's surface. → `analysis/tripod_test/`.
+- **A calibrated end-to-end reading chain, run as a shakedown.** The
+  first-light team's preregistration adopted unchanged: the positive control
+  (PHerc0139 w035) came through with legible letters, labels on the strokes,
+  medians 0.73 vs 0.24; on PHerc 0257 wraps 10–65, 50 candidates cleared the
+  0.5 mm floor and none was stroke-like — they sit at the 88th brightness
+  percentile of the render where real ink sits at the 38th. Three chain
+  breaks found and fixed on the way. → `preregistrations/2026-09-02_shakedown_pherc0257.md`,
+  `validation/shakedown_0257/`.
+- **3D ink at prize resolution, one block.** The organisers' volumetric ink
+  model gives ink-like output on PHerc 1667 at 2.4 µm and agrees with itself
+  9 % of the time on the same block at 9.6 µm; using our field to assign
+  those ink voxels to pages is right 38 % of the time, wrong by exactly the
+  integrated overcount. → `validation/ink3d/`.
+- **Killed at the premise, cheaply, with the numbers recorded:** an
+  ambiguity map from constraint resampling (AUC 0.49), a ratiometric
+  confidence weight (0.97-correlated with the old one), the whole
+  localising-integrator family (99.3 % of constraints already satisfied,
+  violations diffuse), twist-rate propagation (undefined on a non-circular
+  scroll), and a ring-artifact confound (field moves 0.07 winding).
+  → `analysis/ambiguity/`, `analysis/ratiometric_quality/`,
+  `analysis/integrator/`, `analysis/twist/`, `analysis/ring_audit/`.
 - **Plugged into the fitter's dense winding-model input, the field matches
   the trained neural model within noise** on the held-out Paris 4 band
   (53.0–53.1 vs 53.6/53.2 patches) with ~3,400× fewer crossings. The same
