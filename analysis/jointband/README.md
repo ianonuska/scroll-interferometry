@@ -39,3 +39,21 @@ item 9.2). **Next (declared):** a joint assignment over all four bands with
 spatial consistency along and across the sheet normal, scored against this
 same protocol; worth shipping only if it closes ≥ 1/3 of the gap
 (≥ 50.5 % correct) and does not lower the gauge M1/M2 on the same slice.
+
+## Joint assignment by MRF — FAILED its bar (2026-09-02, `jointband_mrf.py`)
+ICM over the four band labels with amplitude evidence, the coarse-solve
+prior, and 4-neighbour smoothness of the chosen pitch; parameters tuned on
+odd-numbered wraps, scored on even-numbered wraps only.
+
+| | correct on held-out wraps |
+|---|---|
+| pitch lock (baseline) | 42.4 % |
+| MRF, best of 24 settings on the tune wraps | **41.1 %** |
+| ship bar | 50.5 % |
+
+Without the prior, more smoothing made it worse (37 → 42 % on tune); with
+the prior it never beat the prior alone. Why: the wrong band is spatially
+coherent — a face-split harmonic is consistent over a whole region — so
+smoothness cannot separate it from the truth. The 78 % ceiling needs
+non-local evidence (which face belongs to which sheet), i.e. item 9.2, not a
+better local rule. Not shipped.

@@ -1,0 +1,27 @@
+meshes/PHerc0800/z5664_w020        aprova   n=   327 S_switch=0.694 S_mad=0.968
+meshes/PHerc0800/z6272_w020        parcial  n=   342 S_switch=0.915 S_mad=2.463
+meshes/PHerc0800/z6864_w020        parcial  n=   323 S_switch=0.551 S_mad=0.620
+meshes/PHerc0800/z6864_w060        reprova  n=  1111 S_switch=0.790 S_mad=1.152
+meshes/PHerc0800/z7472_w020        reprova  n=   347 S_switch=0.585 S_mad=0.669
+meshes/PHerc0800/z8064_w020        reprova  n=   313 S_switch=0.770 S_mad=1.265
+meshes/PHerc0800/z8672_w020        aprova   n=   437 S_switch=0.851 S_mad=1.735
+meshes/PHerc0800/z8672_w040        aprova   n=   713 S_switch=0.907 S_mad=2.422
+meshes/PHerc0800/z9264_w020        aprova   n=   404 S_switch=0.713 S_mad=1.023
+meshes/PHerc0800/z9872_w020        aprova   n=   385 S_switch=0.852 S_mad=1.734
+meshes/PHerc0800/z11072_w020       aprova   n=   400 S_switch=0.790 S_mad=1.188
+meshes/PHerc0800/z11072_w040       aprova   n=   785 S_switch=0.851 S_mad=1.633
+meshes/PHerc0800/z12272_w020       aprova   n=   391 S_switch=0.841 S_mad=1.678
+meshes/PHerc0800/z13472_w020       aprova   n=   367 S_switch=0.837 S_mad=1.243
+meshes/PHerc0800/z14064_w020       aprova   n=   406 S_switch=0.665 S_mad=0.792
+meshes/PHerc0800/z14672_w020       aprova   n=   361 S_switch=0.471 S_mad=0.479
+meshes/PHerc0800/z15264_w020       aprova   n=   340 S_switch=0.871 S_mad=1.603
+meshes/PHerc0800/z15264_w100       aprova   n=  1310 S_switch=0.955 S_mad=9.295
+meshes/PHerc0800/z15872_w020       parcial  n=   323 S_switch=0.625 S_mad=0.740
+meshes/PHerc0800/z16464_w020       aprova   n=   283 S_switch=0.707 S_mad=1.853
+meshes/PHerc0800/z17072_w020       parcial  n=   307 S_switch=0.824 S_mad=1.492
+meshes/PHerc0800/z17072_w080       reprova  n=  1268 S_switch=0.969 S_mad=6.249
+meshes/PHerc0800/z17072_w100       reprova  n=  1601 S_switch=0.975 S_mad=6.554
+PRIMARY S_switch: AUC=0.571 (n=14 aprova vs 5 reprova), bootstrap 5-95%: 0.27-0.86 -> fail
+PRIMARY S_mad: AUC=0.529 (n=14 aprova vs 5 reprova), bootstrap 5-95%: 0.26-0.81 -> fail
+SECONDARY Spearman(S_switch, wrap) over 23: rho=+0.607 p=0.002 (must be positive to reproduce his falloff)
+TRIPOD SCORING DONE
