@@ -65,7 +65,21 @@ ink/background medians, the pipeline is declared uncalibrated and no
 statement of any kind is made about the target.
 
 ## Calibration — filled from the control run, before target inference
-(empty until then)
+Control render: 5,660 × 5,000 px at level 2 of the 2.399 µm volume, 28
+slices; inference with the stated checkpoint, `--direction both`.
+
+| direction | median on labelled ink | median on background | separation |
+|---|---|---|---|
+| forward | **0.7294** | 0.2431 | +0.4863 |
+| reverse | 0.2627 | 0.2588 | +0.0039 |
+
+Letterforms are legible in the forward prediction and the published labels
+fall on the predicted strokes
+(`../validation/shakedown_0257/control_w035_prediction_vs_labels.png`);
+the reverse direction shows no separation, as expected for a control whose
+orientation is fixed. **Signal threshold for the target = 0.7294**, the
+forward median on labelled ink. (The first-light team obtained 0.7843 /
+0.2235 on the same segment by their route; the pattern is the same.)
 
 ## False-positive statement — written after inference; criteria above never edited
 (empty)
