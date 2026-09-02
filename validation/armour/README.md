@@ -61,4 +61,21 @@ band-selection ceiling are properties of the instrument at ~8–10 µm, not of
 PHerc 1667. Every claim in `../fringe_scale` and `../../analysis/jointband`
 now rests on two scrolls and seven stations.
 
-## A4 — see below when complete
+## A4 — "adjacent slices agree only to 1.4–2.7 windings" → measured at 9.6 µm, and with z-coupling
+`a4_slab.py`, `a4_slab.json`. PHerc 1667, three adjacent 9.6 µm slices
+(z 4633–4635), static instrument (no lock, as `winding_slab.py` is written).
+Metric: median and p90 of |ΔW| between adjacent slices after per-pair gauge
+alignment.
+
+| solve | pair (4633, 4634) | pair (4634, 4635) |
+|---|---|---|
+| independent slices | median 0.256, p90 0.60 | median 0.217, p90 0.54 |
+| z-coupled slab (`solve_slab`, wz_rel 0.4) | median **0.0037**, p90 0.046 | median **0.0037**, p90 0.046 |
+
+Two things to say plainly. The ledger's 1.4–2.7 windings is superseded:
+independent solves at 9.6 µm already agree to about a quarter of a winding.
+And the slab's 70× tighter agreement is partly by construction — the
+coupling term penalises exactly this difference — and the conjugate-gradient
+solve stopped at its 9,000-iteration cap rather than converging. Whether the
+coupled field is *more accurate* against the accepted wraps was not measured
+here and is the next step before the coupled solve is used anywhere.
