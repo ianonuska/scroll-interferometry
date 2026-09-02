@@ -112,3 +112,25 @@ would need ground truth we only have on this scroll, so it is not pursued.
 Frame note: this is the "field-frame" de-chirp the negative result above
 argued for — the prior comes from the field's own coarse solve along the
 sheet normal, not from polar coordinates about the umbilicus.
+
+## Figures (real data; counts measured on the figure, not asserted)
+
+![fringe scale by wrap](fig_fringe_scale_by_wrap.png)
+
+Fringes counted per true winding, per accepted wrap pair, for the three
+fields. The 19.2 µm static field undercounts (median 0.73), the 9.6 µm
+static field overcounts (1.39), and the locked field sits nearest one (0.97
+on this inverted scale). w36→w37 is an outlier for all three: its measured
+"spacing" of 25 px suggests those two accepted meshes are not physically
+adjacent in this slab.
+
+![lock contours](fig_lock_contours.png)
+
+The same interior region at 9.6 µm with the integer contours of each field
+drawn over the CT; yellow dots are the accepted single-wrap segments, the
+green segment is one radial line. Crossings counted along that line: the
+line meets 15 accepted wraps, the static field crosses **29** contours (the
+red contours visibly run through the dark gaps between sheets — the
+face-splitting), the locked field **24**. A partial correction, shown as
+measured. Caveat: wraps w24–w27 are physically present on this line but
+absent from the accepted set, so the true sheet count is somewhat above 15.
