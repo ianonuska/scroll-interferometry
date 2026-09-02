@@ -80,3 +80,34 @@ w30→w31 1.41) — the coarse prior there is inflated by the 19.2 µm
 undercount itself, so the face gate rejects real neighbours. The declared
 next step is to calibrate the prior by the measured 0.73 rather than widen
 any tolerance; then the real criterion, the gauge at 9.6 µm.
+
+## The declared gate, on the community's scorer — PASSED
+
+The README roadmap declared, before any of this was built, that a de-chirped
+9.6 µm solve had to beat the static 9.6 µm gauge numbers (M1 0.132 /
+M2 3.70) on the identical ground truth and adapter protocol. Iteration 2
+(pitch lock + face gate), scored by pscamillo's constraint-gauge unmodified
+(`constraint_gauge_summary_9.6um_locked.json`):
+
+| field @ 9.6 µm | M1 exact-dw1 | M2 MAE (windings) | coverage |
+|---|---|---|---|
+| static (dominant band, no lock) | 0.132 | 3.70 | 0.352 |
+| **locked + face-gated** | **0.200** | **2.37** | 0.352 |
+| (for reference: static @ 19.2 µm) | 0.190 | 2.47 | 0.352 |
+
+M1 up by half, M2 down by a third, and the finer resolution is now the
+better one — which is what the physics said should happen once the
+face-splitting harmonic was suppressed. Density gate identical (SCORABLE,
+ratio 0.39), same 3,679 GT points, same 200k pairs.
+
+**Iteration 3 — calibrating the prior by the measured 0.73 — is an
+over-correction, reported as such** (`fringe_scale_by_wrap_L2_locked3.json`):
+per-wrap median 0.89, inner wraps improve (1.48 → 1.25) but outer wraps
+worsen (1.03 → 0.81). The 19.2 µm undercount is not uniform (≈1.0 outer,
+≈1.6 inner, see the first table), so a flat correction cannot be right by
+construction. Iteration 2 is the result; a spatially varying calibration
+would need ground truth we only have on this scroll, so it is not pursued.
+
+Frame note: this is the "field-frame" de-chirp the negative result above
+argued for — the prior comes from the field's own coarse solve along the
+sheet normal, not from polar coordinates about the umbilicus.

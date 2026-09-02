@@ -25,7 +25,10 @@ scalability by a great extent").
   (scorer unmodified): M1 0.190, M2 2.47 windings at 19.2 µm; our exported
   confidence turns out to be uninformative, and the fringe scale is
   resolution-dependent (≈0.8 windings per fringe at 19.2 µm, ≈1.4 at
-  9.6 µm). → *Cross-check on the community constraint-gauge*.
+  9.6 µm) — corroborated independently per wrap, and then *fixed*: a pitch
+  lock plus face gate lifts the 9.6 µm score to M1 0.200 / M2 2.37, passing
+  the bar declared in advance. → *Cross-check on the community
+  constraint-gauge*, `validation/fringe_scale/`.
 - **Plugged into the fitter's dense winding-model input, the field matches
   the trained neural model within noise** on the held-out Paris 4 band
   (53.0–53.1 vs 53.6/53.2 patches) with ~3,400× fewer crossings. The same
@@ -298,8 +301,17 @@ now done: constraint-gauge results are in the cross-check section above
 
 ### Roadmap
 
-**Next instrument upgrade — rotating-frame processing (planned, not yet
-built).** The scroll is a linear chirp in the rotating frame: in polar
+**Rotating-frame processing — first iteration BUILT and gate PASSED
+(2026-09-01; `validation/fringe_scale/`).** A pitch lock on the quadrature
+band selection plus a prior-gated face rejection in the ridge constraints
+takes the 9.6 µm constraint-gauge score from M1 0.132 / M2 3.70 to
+**M1 0.200 / M2 2.37**, beating the pre-declared bar and the 19.2 µm
+numbers; per-wrap fringe scale at 9.6 µm moves from 0.72 to 1.03. The
+original plan text follows; the polar-coordinate framing in it was
+superseded by measurement (radial-profile estimators fail on a non-circular
+scroll), so the lock operates in the field's own frame.
+
+Original plan: The scroll is a linear chirp in the rotating frame: in polar
 coordinates around the umbilicus a spiral wrap is a tilted stripe, so
 de-chirping (shearing by the local pitch, the radar pulse-compression move)
 should collapse windings toward separable flat lines. This attacks both

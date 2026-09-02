@@ -1,0 +1,97 @@
+{
+  "n_pairs_gt": 200002,
+  "n_scorable": 70455,
+  "M4_coverage": 0.3522714772852272,
+  "n_dw1": 7412,
+  "M1_exact_dw1": 0.20021586616297896,
+  "M2_mae": 2.3678108379080234,
+  "M3_bins": [
+    {
+      "bin": 0,
+      "n": 6953,
+      "conf_mean": 0.10351550342737728,
+      "acc": 0.14842514022724004
+    },
+    {
+      "bin": 1,
+      "n": 7135,
+      "conf_mean": 0.17102078521635955,
+      "acc": 0.13931324456902594
+    },
+    {
+      "bin": 2,
+      "n": 7016,
+      "conf_mean": 0.22443758853484994,
+      "acc": 0.14167616875712657
+    },
+    {
+      "bin": 3,
+      "n": 7049,
+      "conf_mean": 0.27742105520757515,
+      "acc": 0.14413391970492268
+    },
+    {
+      "bin": 4,
+      "n": 7016,
+      "conf_mean": 0.3210225181448079,
+      "acc": 0.13397947548460662
+    },
+    {
+      "bin": 5,
+      "n": 7084,
+      "conf_mean": 0.3613664059148274,
+      "acc": 0.15189158667419536
+    },
+    {
+      "bin": 6,
+      "n": 7019,
+      "conf_mean": 0.4111275473268033,
+      "acc": 0.15344066106282947
+    },
+    {
+      "bin": 7,
+      "n": 7075,
+      "conf_mean": 0.46267552188765454,
+      "acc": 0.1423321554770318
+    },
+    {
+      "bin": 8,
+      "n": 7038,
+      "conf_mean": 0.5308776089720985,
+      "acc": 0.14151747655583974
+    },
+    {
+      "bin": 9,
+      "n": 7070,
+      "conf_mean": 0.6682261606928651,
+      "acc": 0.14837340876944838
+    }
+  ],
+  "M3_ece_rank": 0.3750538287766392,
+  "M3_note": "confidence is an arbitrary monotone scale; the curve shows whether higher conf means higher accuracy, not absolute probabilities",
+  "adapter": "windingmeter-1667-z2317-9.6um-L2_locked2",
+  "planar_matching": true,
+  "density_gate": {
+    "node_gap_vox": 36.0,
+    "sheet_gap_vox": 93.37223843268028,
+    "ratio": 0.38555357142857144,
+    "limit": 1.0,
+    "scorable": true
+  },
+  "scorable": true,
+  "adapter_z": 18536.0,
+  "subject": "windingmeter-1667-z2317-9.6um-L2_locked2",
+  "gt_arm": "paris4-annotations",
+  "provenance": "undeclared",
+  "provenance_note": "subject not in the provenance registry",
+  "publishable_as_headline": false,
+  "tau_vox_mean": 45.17034904249092,
+  "tau_vox_median": 46.68611921634014,
+  "tau_points_a22": 2914,
+  "tau_points_fallback": 765,
+  "tau_mode": "a2.2-measured + 3.3-median fallback",
+  "pitch_um": 224.0,
+  "um_per_vox": 2.399,
+  "mesh_stride": null,
+  "max_pairs": 200000
+}
