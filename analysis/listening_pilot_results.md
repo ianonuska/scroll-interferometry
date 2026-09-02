@@ -81,3 +81,16 @@ more.
 - `listening_pilot_results.csv`, `listening_sensitivity_inklabels.csv`
 - Raw logs on request; every number regenerates with one command from
   public data.
+
+## Prior art read 2026-09-02 — scope correction
+
+Angelotti, Nicolardi, Henderson & Seales (Sci. Rep. 2026,
+doi:10.1038/s41598-026-58467-1) show that in sub-micron optical heightmaps
+of opened papyri a trained network separates ink from papyrus (Dice 0.89 at
+0.34 µm), but that this surface-morphology signal is at the trivial baseline
+by ≥ 3.4 µm pixel size, and that ink relief is not systematic (sign flips
+between papyri). Full reading in `prior_art/topography_2026.md`. Consequence
+for this pilot: nothing here is, or may be, a surface-relief claim. The S1–S4
+statistics are near-surface CT intensity texture, a different observable;
+the pilot stands or falls on its own controls, and it is cited here so that
+no reader mistakes one for the other.
