@@ -1,0 +1,6 @@
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+corr(ambiguity, quality w) = +0.087  (kill if ~1)
+corr(ambiguity, log quality) = +0.110
+spatial prediction: n_hi=52478 n_lo=7890  AUC(ambiguity | high-error vs low-error) = 0.489  (pass >= 0.7)
+ambiguity percentiles (windings): p50 0.05 p90 0.08 p99 0.12
+AMBIGUITY PROTOTYPE DONE
