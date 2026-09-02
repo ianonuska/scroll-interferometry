@@ -32,6 +32,13 @@ than an algorithmic one; and where the true spacing is ≥9 px (w31–w34) the
 ratio is 1.0–1.1. The operating envelope should be stated as roughly
 "pitch ≥ 10 px at the analysis level".
 
+**The same measurement at 9.6 µm (`fringe_scale_by_wrap_L2.json`):** true
+spacing 12–19 px, field pitch 10–12.7 px, median field/true 0.72 — i.e.
+≈1.39 fringes per winding, the face-splitting overcount, matching the
+gauge's 1.4 at 9.6 µm. Both regimes of the fringe-scale finding are now
+corroborated by an independent method. This also fixes the de-chirp gate:
+at 9.6 µm the per-wrap ratio must move from 0.72 toward 1.0.
+
 **A negative result that shaped the roadmap.** Three textbook pitch
 estimators on radial profiles in polar coordinates about the umbilicus
 (autocorrelation first-peak, cepstrum, and a chirp-rate search) all failed a
