@@ -25,3 +25,23 @@ within 10° of unsheared. Distortion concentrates in the innermost wraps
 between concatenated windings; the body of the surface is faithful. Any
 letter called out from this render must quote the local area ratio, and
 nothing at a seam streak counts (already excluded by the preregistration).
+
+## Target audit, w010–w065 (2026-09-02)
+`target_audit.py` (threshold 0.7294, both directions, 0.5 mm floor),
+`candidate_sheet.py` (orientation, local distortion, seam flag),
+`brightness_check.py`. Outputs: `w010-065_summary.json`,
+`w010-065_candidates_annotated.csv`, `w010-065_candidate_sheet.png`,
+`w010-065_overview.png`.
+
+| | |
+|---|---|
+| pixels above threshold in both directions | 104,323 of 666,288,000 |
+| connected components | 2,806 |
+| passing the 0.5 mm floor | 50 |
+| flagged seam / array edge / distorted | 11 |
+| unflagged and fibre-aligned | 38 |
+| brightness percentile of those 38 | median 0.88 (control's real ink: 0.38) |
+| corr(forward, reverse) on the target | 0.91 |
+
+Reading in the preregistration's false-positive statement. The verdict
+sentence is written by a human.

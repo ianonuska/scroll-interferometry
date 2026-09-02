@@ -82,7 +82,38 @@ forward median on labelled ink. (The first-light team obtained 0.7843 /
 0.2235 on the same segment by their route; the pattern is the same.)
 
 ## False-positive statement — written after inference; criteria above never edited
-(empty)
+Written 2026-09-02 03:30 UTC, after target inference on w010–w065 (render
+264,400 × 2,520 px, 28 slices; inference `--direction both`, threshold
+0.7294 from the control).
+
+Applied mechanically (`../validation/shakedown_0257/target_audit.py`): of
+666,288,000 rendered pixels, 104,323 exceeded the threshold in both
+directions; they formed 2,806 connected components, of which 50 passed the
+0.5 mm size floor. Of those 50, 11 sit on empty array edges or in cells the
+distortion map marks as seam/distorted (excluded by criterion), 41 are
+within 20° of the fibre direction, and 38 are both unflagged and
+fibre-aligned. Every one of the 50 is shown in
+`../validation/shakedown_0257/w010-065_candidate_sheet.png`.
+
+Against missing real ink: the identical pipeline showed legible letterforms
+on the control minutes earlier, with the labels landing on them, and the
+threshold is the control's own median.
+
+Against counting artefacts as ink: none of the 50 is stroke-like. They are
+smooth, uniform-width bands running along the unrolled axis, extending past
+their crops, with diffuse edges and no letter morphology — unlike the
+control's letters, which had edges and form. A test separates the two
+readings: on the control, real ink sits at the 38th percentile of render
+brightness (ink is darker than typical papyrus at this energy); the 38
+unflagged target candidates sit at the **88th** percentile (`brightness_check.py`).
+They are where the flattened surface passes through unusually dense
+material — a surface-sampling artefact, not ink. Forward and reverse
+predictions on this target are 0.91-correlated, so the both-directions
+criterion carried little weight here and is not leaned on. Sensitivity of
+the model to real ink at 9.6 µm rendered from this scroll's own volume is
+not established by this run (the control is a training-set segment from a
+different scroll rendered by a different route); this is a pipeline
+shakedown, and the statement claims no more than that.
 
 ## Verdict — one sentence, human-written, after the statement above
 (empty)

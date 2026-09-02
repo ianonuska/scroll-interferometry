@@ -1,0 +1,12 @@
+{
+ "threshold": 0.729411780834198,
+ "shape": [
+  2520,
+  264400
+ ],
+ "pixels_total": 666288000,
+ "pixels_above_both": 104323,
+ "components": 2806,
+ "pass_size_floor": 50,
+ "size_floor_px": 53.40739158299509
+}
