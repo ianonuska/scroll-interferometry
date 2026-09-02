@@ -94,3 +94,14 @@ for this pilot: nothing here is, or may be, a surface-relief claim. The S1–S4
 statistics are near-surface CT intensity texture, a different observable;
 the pilot stands or falls on its own controls, and it is cited here so that
 no reader mistakes one for the other.
+
+## Composition prior art read 2026-09-02 — the split stays unexplained
+
+Brun et al. 2016 / Tack et al. 2016 measured lead in the ink of two
+unidentified Paris fragments at 16 and 84 µg/cm² (5× apart). None of Frag1–6
+has a published composition. A lead-carrying ink would add tens of percent
+to voxel attenuation at 54 keV (`prior_art/ink_composition_2016.md`), which
+is a candidate mechanism for a fragment-dependent signal — but Frag3 (signal)
+and Frag4 (null) come from the same scroll, so composition does not explain
+this pilot's split; it is recorded as untested, with a runnable ratio test
+on the existing 54/88 keV volumes as the way to test it.
