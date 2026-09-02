@@ -1,0 +1,37 @@
+{
+ "runA_frac_p_ge_0.5": 0.020053058862686157,
+ "runA_p99": 0.9401335716247559,
+ "runB_frac_p_ge_0.5": 0.08091092109680176,
+ "runB_p99": 0.9370958209037781,
+ "dice_B_up_vs_A": 0.0870067468782737,
+ "dice_B_vs_A_down": 0.08396326815343189,
+ "runC_ink_voxels_labelled": 105878,
+ "runC_accuracy": 0.3797106103250911,
+ "runC_per_wrap": {
+  "18": {
+   "n": 3822,
+   "acc": 0.0,
+   "median_assigned_minus_true": 4.0
+  },
+  "23": {
+   "n": 55016,
+   "acc": 0.129580485676894,
+   "median_assigned_minus_true": 2.0
+  },
+  "28": {
+   "n": 45958,
+   "acc": 0.7112581052265111,
+   "median_assigned_minus_true": 0.0
+  },
+  "29": {
+   "n": 960,
+   "acc": 0.40208333333333335,
+   "median_assigned_minus_true": 0.0
+  },
+  "30": {
+   "n": 89,
+   "acc": 0.0,
+   "median_assigned_minus_true": -1.0
+  }
+ }
+}

@@ -40,3 +40,10 @@ than averaged away.
 ## What is not claimed
 Nothing about scrolls other than 1667; nothing about letters; run B is a
 resolution experiment on one block, not a verdict on the 3D model.
+
+## Readout — written after the runs, 2026-09-02; criteria above unedited
+Run A: 2.0 % of voxels p ≥ 0.5, deposits on sheet faces. Run B: Dice 0.087
+against run A → **not useful at prize resolution** by the declared bar (one
+block, one patch, reflect-padded). Run C: accuracy 0.380 → **kill**; the
+failure is the field's scale bias (+2 pages at 5 wraps, +4 at 10). Details
+and figure in `../validation/ink3d/`.
