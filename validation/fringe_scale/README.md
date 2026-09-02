@@ -68,3 +68,15 @@ ridge-adjacency constraints, which assert +2π between adjacent ridges
 regardless of the locked frequency — each sheet face is a ridge. A
 prior-gated minimum ridge spacing (`ridge_min_frac`) is the second declared
 change; result below once measured.
+
+## Pitch lock, second iteration: face gate on the ridge channel
+
+With `ridge_min_frac=0.55` (a ridge closer than 0.55 locked wavelengths is
+treated as the other face of the same sheet and marched past), the 9.6 µm
+median field/true goes **0.72 → 0.78 → 1.03** (`fringe_scale_by_wrap_L2_locked2.json`).
+Outer accepted wraps: w31→w32 1.03, w32→w33 0.98, w34→w35 0.99. Honest
+spread: the inner wraps now *undercount* (w11→w12 1.48, w28→w29 1.41,
+w30→w31 1.41) — the coarse prior there is inflated by the 19.2 µm
+undercount itself, so the face gate rejects real neighbours. The declared
+next step is to calibrate the prior by the measured 0.73 rather than widen
+any tolerance; then the real criterion, the gauge at 9.6 µm.
