@@ -105,7 +105,8 @@ over-correction, reported as such** (`fringe_scale_by_wrap_L2_locked3.json`):
 per-wrap median 0.89, inner wraps improve (1.48 → 1.25) but outer wraps
 worsen (1.03 → 0.81). The 19.2 µm undercount is not uniform (≈1.0 outer,
 ≈1.6 inner, see the first table), so a flat correction cannot be right by
-construction. Iteration 2 is the result; a spatially varying calibration
+construction. On the gauge it scores M1 0.168 / M2 2.86 — better than static, worse than
+iteration 2. Iteration 2 is the result; a spatially varying calibration
 would need ground truth we only have on this scroll, so it is not pursued.
 
 Frame note: this is the "field-frame" de-chirp the negative result above
