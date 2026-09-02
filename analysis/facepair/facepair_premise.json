@@ -1,0 +1,10 @@
+{
+ "n_same": 38058,
+ "n_diff": 17120,
+ "auc": {
+  "min intensity along segment": 0.6485041396931908,
+  "mean intensity along segment": 0.5919662161563793,
+  "interior min": 0.6485049831084999,
+  "gap length (px)": 0.3717201160033416
+ }
+}
