@@ -109,3 +109,33 @@ allow. Both numbers are kept so neither can be mistaken for a result.
 - Every number above regenerates from the public data with the scripts in
   this repository plus the community's `fit_spiral` at the pinned villa
   commit.
+
+## Locked-field rerun — 2026-09-02, the gate's fix does not move the market metric
+
+After the pitch lock + ridge face gate passed the constraint gauge on
+PHerc 1667 (`fringe_scale/`), the PHerc 0257 stations were re-solved with the
+lock (L1, prior from the L2 solve along the sheet normal; station spans fell
+from 104–128 windings unlocked to 89–101 locked — i.e. the lock removed the
+overcount here too) and the organizers' `fit_spiral` was re-run under the
+identical recipe (30,000 iterations, same seed handling, same store format).
+
+| arm | satisfied_track_points_fraction |
+|---|---|
+| baseline (no winding field) | 0.57875 |
+| shell-only (our mask, no winding numbers) | 0.57511 |
+| our field, unlocked (earlier) | 0.57534 |
+| **our field, pitch-locked** | **0.57299** |
+
+![arms](fig_0257_market_test_arms.png)
+
+The four arms span 0.006. A field that changed by ~20 % in winding count and
+improved on the gauge moved this metric by −0.002, in the wrong direction.
+Read plainly: `fit_spiral`'s satisfied-fraction is governed by its own shell
+prior and track set, not by the winding numbers it is handed, at least at the
+weight the recipe uses. We therefore do **not** claim the lock helps anyone's
+downstream fit. What we can say is only what the gauge says (fewer
+face-splitting crossings, M1/M2 improved on PHerc 1667). Whether a locked
+field helps a fitter that actually leans on winding numbers (a higher
+supervision weight, or a different consumer) is an open question, not a
+result. Files: box `/workspace/runs/p0257_ourWM_L1lock.log`,
+`/workspace/lock0257_chain.log`.
