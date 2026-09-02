@@ -1,0 +1,26 @@
+{
+ "6000": {
+  "pairs": 42,
+  "true_pitch_px_median": 26.208084106445312,
+  "static_median_dW": 1.2841098220801008,
+  "locked_median_dW": 0.9673665384145167,
+  "band_points": 14846,
+  "band_accuracy": {
+   "dominant": 0.2937491580223629,
+   "lock": 0.44496834164084603,
+   "oracle": 0.735484305536845
+  }
+ },
+ "9000": {
+  "pairs": 40,
+  "true_pitch_px_median": 24.48030948638916,
+  "static_median_dW": 1.2583613339837818,
+  "locked_median_dW": 1.0280731910200558,
+  "band_points": 14135,
+  "band_accuracy": {
+   "dominant": 0.3032897064025469,
+   "lock": 0.45496993279094444,
+   "oracle": 0.7388043862752034
+  }
+ }
+}

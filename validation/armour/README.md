@@ -39,4 +39,26 @@ sample and the absolute M1 should not be quoted from one arm alone. The
 gauge run here also reproduced the box's earlier numbers (0.200 / 2.368) on
 a different machine.
 
+## A5 — "the second scroll has no ground truth" → it does: PHerc 172 at 7.91 µm
+`a5_0172.py`, `a5_0172.json`. PHerc 172 (volume 20241024131838, 7.910 µm —
+the prize scrolls' resolution) has 44 accepted per-winding segments
+(w052–w095) on the public bucket. Two stations (z 6000, 9000; all 44 wraps
+present on each), same recipe as 1667: 15.8 µm solve → prior → 7.91 µm
+pitch-locked solve, and the static solve; true pitch from adjacent accepted
+wraps (42 and 40 pairs — four times 1667's sample).
+
+| station | pairs | true pitch | static | pitch-locked | band: dominant / lock / oracle |
+|---|---|---|---|---|---|
+| z6000 | 42 | 26.2 px | 1.28 | **0.97** | 0.29 / 0.45 / **0.74** (14,846 pts) |
+| z9000 | 40 | 24.5 px | 1.26 | **1.03** | 0.30 / 0.45 / **0.74** (14,135 pts) |
+| 1667 z18536 (reference) | 10 | — | 1.39 | 0.97 | 0.37 / 0.44 / 0.78 |
+
+![two scrolls](fig_two_scrolls.png)
+
+**Reproduced on a second scroll at the prize resolution, with a larger
+sample.** The static double-count, the lock's correction, and the
+band-selection ceiling are properties of the instrument at ~8–10 µm, not of
+PHerc 1667. Every claim in `../fringe_scale` and `../../analysis/jointband`
+now rests on two scrolls and seven stations.
+
 ## A4 — see below when complete
